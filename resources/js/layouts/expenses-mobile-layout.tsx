@@ -4,7 +4,14 @@ import MobileNav from '@/components/mobile-nav';
 import ParamsIconDropdownMenu from '@/components/params-icon-dropdown-menu';
 import { AddExpenseDrawer } from '@/components/add-expense-drawer';
 
-const ExpensesMobileLayout = ({children} :{children : React.ReactNode}) => {
+const ExpensesMobileLayout = ({children,showExpensesRecapCard, showExpensesRepartitionCard, showExpensesDetailsCard, setShowExpensesRecapCard, setShowExpensesRepartitionCard, setShowExpensesDetailsCard}
+                            :{children : React.ReactNode,
+                              showExpensesRecapCard : boolean,
+                              showExpensesRepartitionCard : boolean,
+                              showExpensesDetailsCard : boolean,
+                              setShowExpensesRecapCard : React.Dispatch<React.SetStateAction<boolean>>,
+                              setShowExpensesRepartitionCard : React.Dispatch<React.SetStateAction<boolean>>,
+                              setShowExpensesDetailsCard :React.Dispatch<React.SetStateAction<boolean>>}) => {
     const targetRef = useRef<HTMLDivElement>(null);
     const pathname = window.location.pathname;
     const title = pathname==="/"? "Dépenses" : pathname === "/bilans" ? "Bilans" : "Paramètres";
@@ -18,7 +25,7 @@ const ExpensesMobileLayout = ({children} :{children : React.ReactNode}) => {
     const opacityHeader = useTransform(scrollYProgress, [0.6,1], [0,1]);
 
     return (
-    <div className='relative h-[100svh] flex flex-col'>
+    <div className='relative min-h-[100svh] flex flex-col'>
         <div className='relative z-10 flex flex-col px-6'>
             <motion.div
             ref = {targetRef}
@@ -44,8 +51,15 @@ const ExpensesMobileLayout = ({children} :{children : React.ReactNode}) => {
                 <h3  className='text-xl font-medium text-typography'>{title}</h3>
               </motion.div>
               <div className='flex gap-2 items-center justify-center'>
-                <AddExpenseDrawer/>
-                <ParamsIconDropdownMenu/>
+                <AddExpenseDrawer />
+                <ParamsIconDropdownMenu
+                  showExpensesRecapCard = {showExpensesRecapCard}
+                  showExpensesRepartitionCard = {showExpensesRepartitionCard}
+                  showExpensesDetailsCard = {showExpensesDetailsCard}
+                  setShowExpensesRecapCard = {setShowExpensesRecapCard}
+                  setShowExpensesRepartitionCard = {setShowExpensesRepartitionCard}
+                  setShowExpensesDetailsCard = {setShowExpensesDetailsCard}
+                />
               </div>
             </header>
             <div className='px-6 relative z-10'> 

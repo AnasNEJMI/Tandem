@@ -5,21 +5,20 @@ import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
-const SpenderDropdown = () => {
-    const [spender, setSpender] = React.useState<string>("...");
+const SpenderDropdown = ({spender, setSpender} : {spender : string, setSpender : React.Dispatch<React.SetStateAction<string>>}) => {
     const [spenderIsAnas, setSpenderIsAnas] = React.useState<Checked>(false);
     const [spenderIsElham, setSpenderIsElham] = React.useState<Checked>(false);
 
     const setAnasAsSpender = () => {
+        setSpender("Anas");
         setSpenderIsAnas(true);
         setSpenderIsElham(false);
-        setSpender("Anas");
     }
 
     const setElhamAsSpender = () => {
+        setSpender("Elham");
         setSpenderIsElham(true);
         setSpenderIsAnas(false);
-        setSpender("Elham");
     }
   return (
     <DropdownMenu>

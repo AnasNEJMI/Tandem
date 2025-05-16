@@ -5,10 +5,13 @@ import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
-const ParamsIconDropdownMenu = () => {
-    const [showMonthRecap, setShowMonthRecap] = React.useState<Checked>(true)
-    const [showDetails, setShowDetails] = React.useState<Checked>(false)
-    const [showRepartition, setShowRepartition] = React.useState<Checked>(false)
+const ParamsIconDropdownMenu =  ({showExpensesRecapCard, showExpensesRepartitionCard, showExpensesDetailsCard, setShowExpensesRecapCard, setShowExpensesRepartitionCard, setShowExpensesDetailsCard}
+                            :{showExpensesRecapCard : boolean,
+                              showExpensesRepartitionCard : boolean,
+                              showExpensesDetailsCard : boolean,
+                              setShowExpensesRecapCard : React.Dispatch<React.SetStateAction<boolean>>,
+                              setShowExpensesRepartitionCard : React.Dispatch<React.SetStateAction<boolean>>,
+                              setShowExpensesDetailsCard :React.Dispatch<React.SetStateAction<boolean>>})  => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,20 +27,20 @@ const ParamsIconDropdownMenu = () => {
         <DropdownMenuLabel>Personnaliser la page</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
-          checked={showMonthRecap}
-          onCheckedChange={setShowMonthRecap}
+          checked={showExpensesRecapCard}
+          onCheckedChange={setShowExpensesRecapCard}
         >
           Récap du mois
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
-          checked={showRepartition}
-          onCheckedChange={setShowRepartition}
+          checked={showExpensesRepartitionCard}
+          onCheckedChange={setShowExpensesRepartitionCard}
         >
           Répartion de dépenses
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
-          checked={showDetails}
-          onCheckedChange={setShowDetails}
+          checked={showExpensesDetailsCard}
+          onCheckedChange={setShowExpensesDetailsCard}
         >
           Détails des dépenses
         </DropdownMenuCheckboxItem>

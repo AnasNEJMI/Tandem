@@ -8,7 +8,7 @@ use Inertia\Inertia;
 //     return Inertia::render('welcome');
 // })->name('home');
 
-Route::get('/',[ExpenseController::class, 'index'])->name('welcome');
+Route::get('/',[ExpenseController::class, 'index'])->name('expenses');
 Route::post('/expenses/', [ExpenseController::class, 'store'])->name('expenses.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {

@@ -1,3 +1,4 @@
+import ExpensesDetailsCard from '@/components/expenses-details-card';
 import ExpensesRecapCard from '@/components/expenses-recap-card';
 import ExpensesRepartitionCard from '@/components/expenses-repartition-card';
 import ExpensesMobileLayout from '@/layouts/expenses-mobile-layout';
@@ -12,6 +13,7 @@ interface WelcomeProps{
 export default function Welcome({expenses} : WelcomeProps) {
     const [showExpensesRecapCard, setShowExpensesRecapCard] = useState(true);
     const [showExpensesRepartitionCard, setShowExpensesRepartitionCard] = useState(true);
+    const [showExpensesDetailsCard, setShowExpensesDetailsCard] = useState(true);
     const { auth } = usePage<SharedData>().props;
     const [form, setForm] = useState({
         amount : '',
@@ -37,7 +39,14 @@ export default function Welcome({expenses} : WelcomeProps) {
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
             </Head>
-            <ExpensesMobileLayout>
+            <ExpensesMobileLayout 
+                showExpensesRecapCard = {showExpensesRecapCard}
+                showExpensesRepartitionCard = {showExpensesRepartitionCard}
+                showExpensesDetailsCard = {showExpensesDetailsCard}
+                setShowExpensesRecapCard = {setShowExpensesRecapCard}
+                setShowExpensesRepartitionCard = {setShowExpensesRepartitionCard}
+                setShowExpensesDetailsCard = {setShowExpensesDetailsCard}
+            >
                 {
                     showExpensesRecapCard && 
                     <ExpensesRecapCard expenses={expenses}/>
@@ -45,6 +54,10 @@ export default function Welcome({expenses} : WelcomeProps) {
                 {
                     showExpensesRepartitionCard &&
                     <ExpensesRepartitionCard expenses={expenses}/>
+                }
+                {
+                    showExpensesDetailsCard &&
+                    <ExpensesDetailsCard expenses = {expenses}/>
                 }
                 {/* <div className="flex w-full items-start justify-center flex-col opacity-100 transition-opacity duration-750 starting:opacity-0 border border-zinc-200 rounded-md">
                     <div className='flex flex-col border border-zinc-100 rounded-md p-6 h-min'>

@@ -9,8 +9,9 @@ use Inertia\Inertia;
 class ExpenseController extends Controller
 {
     public function index(){
-        $expenses = Expense::orderBy('date', 'desc')->get();
-        return Inertia::render('welcome', ['expenses' => $expenses]);
+        $expenses = Expense::latest()->orderBy('date', 'desc')->get();
+        // $expenses = Expense::orderBy('date', 'desc')->get();
+        return Inertia::render('expenses', ['expenses' => $expenses]);
     }
     
     public function store(Request $request){
@@ -19,11 +20,12 @@ class ExpenseController extends Controller
             'spender' => 'required|string|max:100',
             'date' => 'required|date',
             'category'=>'required|string|max:50',
-            'place'=>'required|string|max:100',
+            'place'=>'nullable|string|max:100',
             'comment'=>'nullable|string|max:250',
         ]);
 
         Expense::create($validated);
-        return redirect()->route('welcome');
+        // return Inertia::location(route(name: 'expenses'));
+        return back();
     }
 }

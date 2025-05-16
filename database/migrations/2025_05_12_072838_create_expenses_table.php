@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('spender', 100);
             $table->date('date');
             $table->string('category', 50);
-            $table->string('place', 100);
+            $table->string('place', 100)->nullable();
             $table->string('comment', 250)->nullable();
         });
     }

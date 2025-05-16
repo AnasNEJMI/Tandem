@@ -110,6 +110,31 @@
 }
 
 @layer base {
+    .scrollabe-element{
+    overflow-y: auto;
+    }
+
+    .scrollabe-element::-webkit-scrollbar {
+    width: 6px;
+    border-radius: calc(100000 * 1px);
+    }
+
+    .scrollabe-element::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    }
+
+    .scrollabe-element::-webkit-scrollbar-thumb {
+    background: #888;
+    }
+
+    .scrollabe-element::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    }
+
+    .scrollabe-element::-webkit-scrollbar-button {
+    display: none;
+    }
+
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
         -webkit-appearance: none;
