@@ -20,7 +20,30 @@ const ExpensesDetailsCard = ({expenses} : ExpensesRecapCardProp) => {
     const [filteredExpenses, setFilteredExpenses] = useState(expenses);
     
     useEffect(() => {
-        function sortExpensesByDate(expenses : Expense[], direction : "Croissant" | "Décroissant"){
+
+        var filterExpenses = expenses.filter((expense) => categories.includes(expense.category) && spenders.includes(expense.spender));
+        if(orderBy == "Date"){
+            filterExpenses = sortExpensesByDate(filterExpenses, orderByDirection)
+        }else if(orderBy == "Montant"){
+            filterExpenses = sortExpensesByAmount(filterExpenses, orderByDirection)
+        }
+
+        setFilteredExpenses(filterExpenses);
+    }, [categories, spenders, orderBy, orderByDirection])
+    
+    useEffect(() => {
+        console.log('expenses changed :', expenses);
+        var filterExpenses = expenses.filter((expense) => categories.includes(expense.category) && spenders.includes(expense.spender));
+        if(orderBy == "Date"){
+            filterExpenses = sortExpensesByDate(filterExpenses, orderByDirection)
+        }else if(orderBy == "Montant"){
+            filterExpenses = sortExpensesByAmount(filterExpenses, orderByDirection)
+        }
+
+        setFilteredExpenses(filterExpenses);
+    }, [expenses])
+
+    function sortExpensesByDate(expenses : Expense[], direction : "Croissant" | "Décroissant"){
             return expenses.sort((a, b) => {
                 const dateA = new Date(a.date).getTime();
                 const dateB = new Date(b.date).getTime();
@@ -37,17 +60,6 @@ const ExpensesDetailsCard = ({expenses} : ExpensesRecapCardProp) => {
                 return direction === "Croissant"? amountA - amountB : amountB - amountA;
             })
         }
-
-
-        var filterExpenses = expenses.filter((expense) => categories.includes(expense.category) && spenders.includes(expense.spender));
-        if(orderBy == "Date"){
-            filterExpenses = sortExpensesByDate(filterExpenses, orderByDirection)
-        }else if(orderBy == "Montant"){
-            filterExpenses = sortExpensesByAmount(filterExpenses, orderByDirection)
-        }
-
-        setFilteredExpenses(filterExpenses);
-    }, [categories, spenders, orderBy, orderByDirection])
     
     return (
     <Card className="rounded-xl mt-6  opacity-100 translate-y-0 duration-750 starting:opacity-0 starting:translate-y-6 transition-all">

@@ -1,10 +1,14 @@
 import ExpensesDetailsCard from '@/components/expenses-details-card';
 import ExpensesRecapCard from '@/components/expenses-recap-card';
 import ExpensesRepartitionCard from '@/components/expenses-repartition-card';
+import AuthLayout from '@/layouts/auth-layout';
+import AuthCardLayout from '@/layouts/auth/auth-card-layout';
 import ExpensesMobileLayout from '@/layouts/expenses-mobile-layout';
 import { Expense, type SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { ChangeEvent, FormEvent, useState } from 'react';
+import Login from './auth/login';
+import Register from './auth/register';
 
 interface WelcomeProps{
     expenses : Expense[];
@@ -15,23 +19,6 @@ export default function Welcome({expenses} : WelcomeProps) {
     const [showExpensesRepartitionCard, setShowExpensesRepartitionCard] = useState(true);
     const [showExpensesDetailsCard, setShowExpensesDetailsCard] = useState(true);
     const { auth } = usePage<SharedData>().props;
-    const [form, setForm] = useState({
-        amount : '',
-        spender : '',
-        date : '',
-        category : '',
-        place : '',
-        comment : '',
-    })
-
-    const handleFormSubmit = (e : FormEvent) => {
-        e.preventDefault();
-        router.post('/expenses', form);
-    }
-    
-    const handleFormChange = (e : ChangeEvent<HTMLInputElement>|ChangeEvent<HTMLTextAreaElement>) => {
-        setForm({... form, [e.target.name] : e.target.value})
-    }
 
     return (
         <>
@@ -39,6 +26,7 @@ export default function Welcome({expenses} : WelcomeProps) {
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
             </Head>
+            <Register/>
             <ExpensesMobileLayout 
                 showExpensesRecapCard = {showExpensesRecapCard}
                 showExpensesRepartitionCard = {showExpensesRepartitionCard}

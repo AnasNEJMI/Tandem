@@ -9,7 +9,7 @@ use Inertia\Inertia;
 // })->name('home');
 
 Route::get('/',[ExpenseController::class, 'index'])->name('expenses');
-Route::post('/expenses/', [ExpenseController::class, 'store'])->name('expenses.store');
+Route::post('/', [ExpenseController::class, 'store'])->name('expenses.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

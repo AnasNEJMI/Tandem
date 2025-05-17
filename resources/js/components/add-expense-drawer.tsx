@@ -77,12 +77,11 @@ export function AddExpenseDrawer() {
   
   const handleSubmit = (e : React.FormEvent) => {
     e.preventDefault();
-    post('/expenses', {
-      preserveScroll : true,
-      preserveState : true,
+    post('/', {
+      // preserveScroll : true,
+      // preserveState : true,
       only : ['expenses'],
       onSuccess : () => {
-        Inertia.replace(route('expenses'), { preserveState: true, preserveScroll: true });
         setAmountInteger('0');
         setAmountDecimal('0');
         setDate(undefined);
@@ -90,6 +89,7 @@ export function AddExpenseDrawer() {
         setCategory("Courses");
         setSelectedPlaces([]);
         setComment("");
+        reset();
       }
     })
   }
@@ -99,7 +99,7 @@ export function AddExpenseDrawer() {
         <Button variant="outline">Ajouter</Button>
       </DrawerTrigger>
       <DrawerContent>
-        <form onSubmit={handleSubmit} className="mx-auto w-full max-w-sm h-full relative px-6">
+        <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="mx-auto w-full max-w-sm h-full relative px-6">
           <DrawerHeader className="mt-6">
             <DrawerTitle>Création d'une dépense</DrawerTitle>
             <DrawerDescription>Formulaire de dépense</DrawerDescription>
@@ -107,9 +107,9 @@ export function AddExpenseDrawer() {
           </DrawerHeader>
           <div className="py-4 pb-0 w-full flex flex-col items-center gap-2">
             <div className="flex items-center justify-center gap-4 w-full">
-              <Input type='number' min={0} value={amountInteger} onChange={e => setAmountInteger(e.target.value)}  max={999999} onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}} className="text-5xl text-center font-bold tracking-tighter py-10 w-32"/>
+              <Input disabled = {processing} type='number' min={0} value={amountInteger} onChange={e => setAmountInteger(e.target.value)}  max={999999} onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}} className="text-5xl text-center font-bold tracking-tighter py-10 w-32"/>
               <span className="text-typography font-black text-xl"> , </span>
-              <Input type='number' min={0} value={amountDecimal} onChange={e => setAmountDecimal(e.target.value)} max={99} onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}} className="text-5xl text-center font-bold tracking-tighter py-10 w-24"/>
+              <Input disabled = {processing} type='number' min={0} value={amountDecimal} onChange={e => setAmountDecimal(e.target.value)} max={99} onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}} className="text-5xl text-center font-bold tracking-tighter py-10 w-24"/>
               <span className="text-typography font-black text-xl"> €</span>
             </div>
             <div className="text-[0.70rem] text-typography">
@@ -138,7 +138,7 @@ export function AddExpenseDrawer() {
                   expenseCategories.map((expenseType, index)=>(
                     <CarouselItem key={index} className="courses-input basis-1/4 rounded-md">
                       <div className='w-full rounded-md h-full flex items-center justify-center'>
-                        <input type="radio" id={`expense-category-${index+1}`} name="categories" value={expenseType} className="w-0 h-0 appearance-none" checked = {category === expenseType} onChange={(e) => updateCategory(e.target.value)}/>
+                        <input disabled = {processing} type="radio" id={`expense-category-${index+1}`} name="categories" value={expenseType} className="w-0 h-0 appearance-none" checked = {category === expenseType} onChange={(e) => updateCategory(e.target.value)}/>
                         <label htmlFor={`expense-category-${index+1}`} className={`cursor-pointer rounded-md ${category === expenseType? "bg-primary text-primary-foreground" : "bg-transparent border border-card-border text-typography"} text-xs w-full h-full py-2 flex items-center justify-center`}>{expenseType}</label>
                       </div>
                     </CarouselItem>
@@ -164,7 +164,7 @@ export function AddExpenseDrawer() {
                       coursesLocations.map((courseLocation, index) => {
 
                         return (
-                        <li key={courseLocation} className={`cursor-pointer rounded-md ${selectedPlaces.includes(courseLocation)? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-card-border text-typography"} border text-xs py-2 px-2 flex items-center justify-center`} onClick={() => updateSelectedLocations(courseLocation)}>
+                        <li key={courseLocation} className={`cursor-pointer rounded-md ${processing? "pointer-events-none" : ""} ${selectedPlaces.includes(courseLocation)? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-card-border text-typography"} border text-xs py-2 px-2 flex items-center justify-center`} onClick={() => updateSelectedLocations(courseLocation)}>
                           {courseLocation}
                         </li>
                         )
@@ -191,7 +191,7 @@ export function AddExpenseDrawer() {
                       loisirsActivities.map((loisirActivity, index) => {
 
                         return (
-                        <li key={loisirActivity} className={`cursor-pointer rounded-md ${selectedPlaces.includes(loisirActivity)? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-card-border text-typography"} border text-xs py-2 px-2 flex items-center justify-center`} onClick={() => updateSelectedLocations(loisirActivity)}>
+                        <li key={loisirActivity} className={`cursor-pointer rounded-md ${processing? "pointer-events-none" : ""} ${selectedPlaces.includes(loisirActivity)? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-card-border text-typography"} border text-xs py-2 px-2 flex items-center justify-center`} onClick={() => updateSelectedLocations(loisirActivity)}>
                           {loisirActivity}
                         </li>
                         )
@@ -213,7 +213,7 @@ export function AddExpenseDrawer() {
                 >
                   <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
                   <span className="text-start text-sm">Lieu</span>
-                  <Input className="text-xs" onChange={(e) => setSelectedPlaces([e.target.value])}/>
+                  <Input disabled = {processing} className="text-xs" onChange={(e) => setSelectedPlaces([e.target.value])}/>
                 </motion.div>
               }
 
@@ -229,7 +229,7 @@ export function AddExpenseDrawer() {
                 >
                   <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
                   <span className="text-start text-sm">Destination</span>
-                  <Input className="text-xs mt-2" onChange={(e) => setSelectedPlaces([e.target.value])}/>
+                  <Input disabled = {processing} className="text-xs mt-2" onChange={(e) => setSelectedPlaces([e.target.value])}/>
                 </motion.div>
               }
             </AnimatePresence>
@@ -238,7 +238,7 @@ export function AddExpenseDrawer() {
           <div className="absolute left-0 px-6 bottom-0 w-full flex flex-col">
             <div className="h-px w-full bg-popover-border mt-2 mb-2"></div>
             <span className="text-sm text-typography">Commentaire</span>
-            <Textarea className="w-full mt-2 p-2 text-sm " value={comment} onChange={e => setComment(e.target.value)} placeholder="Des informations à ajouter?"/>
+            <Textarea disabled = {processing} className="w-full mt-2 p-2 text-sm " value={comment} onChange={e => setComment(e.target.value)} placeholder="Des informations à ajouter?"/>
             <div className="h-px w-full bg-popover-border mt-2 mb-2"></div>
 
             <DrawerFooter className="flex gap-4 flex-row w-full">

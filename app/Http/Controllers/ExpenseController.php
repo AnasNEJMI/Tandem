@@ -25,7 +25,9 @@ class ExpenseController extends Controller
         ]);
 
         Expense::create($validated);
-        // return Inertia::location(route(name: 'expenses'));
-        return back();
+
+         return Inertia::render('expenses', [
+            'expenses' => Expense::latest()->orderBy('date', 'desc')->get(),
+        ]);
     }
 }
