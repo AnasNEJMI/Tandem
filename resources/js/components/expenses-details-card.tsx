@@ -20,7 +20,6 @@ const ExpensesDetailsCard = ({expenses} : ExpensesRecapCardProp) => {
     const [filteredExpenses, setFilteredExpenses] = useState(expenses);
     
     useEffect(() => {
-
         var filterExpenses = expenses.filter((expense) => categories.includes(expense.category) && spenders.includes(expense.spender));
         if(orderBy == "Date"){
             filterExpenses = sortExpensesByDate(filterExpenses, orderByDirection)
@@ -32,7 +31,6 @@ const ExpensesDetailsCard = ({expenses} : ExpensesRecapCardProp) => {
     }, [categories, spenders, orderBy, orderByDirection])
     
     useEffect(() => {
-        console.log('expenses changed :', expenses);
         var filterExpenses = expenses.filter((expense) => categories.includes(expense.category) && spenders.includes(expense.spender));
         if(orderBy == "Date"){
             filterExpenses = sortExpensesByDate(filterExpenses, orderByDirection)

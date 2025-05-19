@@ -10,7 +10,6 @@ class ExpenseController extends Controller
 {
     public function index(){
         $expenses = Expense::latest()->orderBy('date', 'desc')->get();
-        // $expenses = Expense::orderBy('date', 'desc')->get();
         return Inertia::render('expenses', ['expenses' => $expenses]);
     }
     

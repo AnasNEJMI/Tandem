@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react'
-import { ChartLineIcon, Flag, Settings, WalletIcon } from 'lucide-react'
+import { ChartLineIcon, FlagIcon, SettingsIcon, WalletIcon } from 'lucide-react'
 import React from 'react'
 
 const MobileNav = () => {
@@ -15,11 +15,11 @@ const MobileNav = () => {
             <span className='text-xs'>Stats</span>
         </Link>
         <Link href={'/'} className='flex items-center justify-center flex-col'>
-            <Flag />
+            <FlagIcon />
             <span className='text-xs'>Objectifs</span>
         </Link>
         <Link href={'/'} className='flex items-center justify-center flex-col'>
-            <Settings />
+            <SettingsIcon />
             <span className='text-xs'>Paramètres</span>
         </Link>
     </footer>

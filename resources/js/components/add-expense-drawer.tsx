@@ -70,16 +70,12 @@ export function AddExpenseDrawer() {
     setData('category', category);
     setData('place', selectedPlaces.join(', '));
     setData('comment', comment);
-    
-    console.log(spender);
-    console.log('new data : ', data)
+
   }, [amountInteger, amountDecimal, category, selectedPlaces, date, spender, comment])
   
   const handleSubmit = (e : React.FormEvent) => {
     e.preventDefault();
-    post('/', {
-      // preserveScroll : true,
-      // preserveState : true,
+    post('/expenses', {
       only : ['expenses'],
       onSuccess : () => {
         setAmountInteger('0');
