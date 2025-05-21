@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('expenses', function (Blueprint $table) {
+        Schema::create('spenders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('name', 100);
             $table->timestamps();
-            $table->decimal('amount', 8, 2)->unsigned();
-            $table->string('spender', 100);
-            $table->date('date');
-            $table->string('category', 50);
-            $table->string('place', 100)->nullable();
-            $table->string('comment', 250)->nullable();
         });
     }
 
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('expenses');
+        Schema::dropIfExists('spenders');
     }
 };
