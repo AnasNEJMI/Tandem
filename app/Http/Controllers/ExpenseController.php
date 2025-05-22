@@ -10,7 +10,8 @@ class ExpenseController extends Controller
 {
     public function index(){
 
-        $user_id = auth()->id();
+        $user = auth()->user();
+        $user_id = $user->id;
 
         $expenses = Expense::with(['spender', 'category', 'places'])
                             ->where('user_id', $user_id)

@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Middleware\HandleAccountSetupNotCompleted;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
-use App\Http\Middleware\RedirectIfAuthOrGuest;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,9 +18,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
         
         $middleware->redirectGuestsTo('/');
-        $middleware->redirectUsersTo('/expenses');
+        $middleware->redirectUsersTo(function(){
+            return auth()->check()? (auth()->user()->is_setup_completed ? '/expenses' : '/setup/spenders') : '/';
+        });
 
         $middleware->web(append: [
+            HandleAccountSetupNotCompleted::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

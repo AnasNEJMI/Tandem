@@ -33,11 +33,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if($request->user()->is_setup_completed){
-            return redirect()->intended(route('expenses', absolute: false));
-        }
+        $user = auth()->user();
 
-        return redirect()->intended(route('setup', absolute: false));
+        if($user->is_setup_completed){
+            return redirect()->intended(route('expenses', absolute: false));
+        }else{
+            return redirect()->intended(route('setup.spenders', absolute: false));
+        }
     }
 
     /**

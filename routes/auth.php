@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\SpenderController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -46,6 +47,19 @@ Route::middleware('auth')->group(function () {
         ->name('expenses');
     Route::post('/expenses', [ExpenseController::class, 'store'])
         ->name('expenses.store');
+
+    Route::get('/setup/spenders',[SpenderController::class, 'index'])
+        ->name('setup.spenders');
+
+    Route::get('/setup/categories',function(){
+            return Inertia::render('setup-categories');
+        })
+        ->name('setup.categories');
+
+    Route::get('/setup/places',function(){
+            return Inertia::render('setup-places');
+        })
+        ->name('setup.places');
     
     Route::get('/stats',[ExpenseController::class, 'index'])
         ->name('stats');
@@ -59,11 +73,6 @@ Route::middleware('auth')->group(function () {
         ->name('settings');
     Route::post('/settings', [ExpenseController::class, 'store'])
         ->name('settings.store');
-
-    Route::get('/setup',[ExpenseController::class, 'index'])
-        ->name('setup');
-    Route::post('/setup', [ExpenseController::class, 'store'])
-        ->name('setup.store');
 
 
     // Route::get('verify-email', EmailVerificationPromptController::class)
