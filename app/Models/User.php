@@ -20,8 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password',
-        'is_setup_completed'
+        'password'
     ];
 
     /**
@@ -45,5 +44,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function setupProgress() {
+        return $this->hasOne(SetupProgress::class);
     }
 }

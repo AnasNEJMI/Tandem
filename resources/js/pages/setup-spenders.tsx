@@ -24,6 +24,13 @@ const SetupSpenders = () => {
       preserveScroll : false,
     });
   }
+  
+  const handlePostSpendersSubmit =(e : React.FormEvent) => {
+    e.preventDefault();
+    post('/setup/spenders', {
+      preserveScroll : false,
+    });
+  }
 
   useEffect(() => {
     console.log("data : ",data);
@@ -52,39 +59,42 @@ const SetupSpenders = () => {
       
       <div className='h-px w-full bg-card-border mt-2'></div>
 
-      <div className='grow mt-10'>
-        <form>
-        {
+        <form onSubmit={handlePostSpendersSubmit} className='grow flex flex-col mt-10'>
+          <div className='grow'>
+          {
           data.spenders.map((spender, index) => (
             <div key={index} className='flex flex-col gap-2 mt-4'>
               <Label className='text-sm'>Nom de la {indexToPo1istion(index)} personne</Label>
               <div className='flex items-center gap-2'>
                 <Input 
-                type='text'
-                value={spender.name}
-                onChange={e => setData('spenders', data.spenders.map((s, i) => {return i === index? {'name' : e.target.value} : {'name' : s.name}}))}
-                placeholder='Saisissez le nom'
-                required/>
+                  type='text'
+                  disabled = {processing}
+                  value={spender.name}
+                  onChange={e => setData('spenders', data.spenders.map((s, i) => {return i === index? {'name' : e.target.value} : {'name' : s.name}}))}
+                  placeholder='Saisissez le nom'
+                  required
+                  minLength={2}
+                  />
+                  {
+                    index !== 0 &&
+                    <Button variant={'outline'} size={'icon'} className='w-8 h-8 p-4 text-muted-foreground'  onClick={() => deleteSpenderAtIndex(index)}>
+                      <Trash2Icon />
+                    </Button>
+                  }
+                </div>
                 {
-                  index !== 0 &&
-                  <Button variant={'outline'} size={'icon'} className='w-8 h-8 p-4 text-muted-foreground'  onClick={() => deleteSpenderAtIndex(index)}>
-                    <Trash2Icon />
-                  </Button>
+                  errors.spenders && errors.spenders === spender.name && <Label className ='text-red-500'>an error!</Label>
                 }
-              </div>
-            </div>
-          ))
-        }
+                </div>
+              ))
+            }
 
-        <Button variant={'outline'} onClick={() => addSpender()} className='flex items-center justify-center w-full mt-6' disabled = {data.spenders.length >=6}>
-          <PlusIcon />
-          <span>Ajouter une personne</span>
-        </Button>
-      </form>
-      </div>
-      
-      <form onSubmit={handleSubmit} method="POST">
-        <Button type='submit' className='w-full'>
+            <Button variant={'outline'} onClick={() => addSpender()} className='flex items-center justify-center w-full mt-6' disabled = {data.spenders.length >=6}>
+              <PlusIcon />
+              <span>Ajouter une personne</span>
+            </Button>
+          </div>
+        <Button disabled = {processing} type='submit' className='w-full'>
           Confirmer
         </Button>
       </form>

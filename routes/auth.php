@@ -50,6 +50,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/setup/spenders',[SpenderController::class, 'index'])
         ->name('setup.spenders');
+    
+    Route::post('/setup/spenders',[SpenderController::class, 'store'])
+        ->name('setup.spenders.store');
 
     Route::get('/setup/categories',function(){
             return Inertia::render('setup-categories');

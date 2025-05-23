@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Spender;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Log;
 
 class SpenderController extends Controller
 {
@@ -13,16 +14,39 @@ class SpenderController extends Controller
     }
 
     public function store(Request $request){
+
+        //trimming white space so things like "  " dont pass
+        $request->merge([
+            'spenders' => collect($request->input('spenders'))
+                ->map(fn ($spender) => [
+                    'name' => trim($spender['name'] ?? ''),
+                ])
+                ->all(),
+        ]);
+
+
         $validated = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
-            'name'=>'required|string|max:100',
+            'spenders' => 'required|array|min:1',
+            'spenders.*.name' => 'required|string|min:2|max:100',
         ]);
 
-        Spender::create([
-            'user_id' => $validated['user_id'],
-            'name' => $validated['name'],
+        Spender::insert(
+            collect($validated['spenders'])->map(fn($spender) => [
+                'user_id' => auth()->id(),
+                'name' => $spender['name'],
+                'created_at'=> now(),
+                'updated_at'=> now(),
+            ])->all()
+        );
+
+        $setupProgress = auth()->user()->setupProgress;
+
+        $setupProgress->update([
+            'current_step' => 'categories',
         ]);
 
-        redirect()->intended(route('setup.categories', absolute:false));
+        Log::debug("spender", ['value', 'about to move to categories']);
+
+        redirect()->route('setup.categories');
     }
 }

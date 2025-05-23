@@ -3,6 +3,7 @@
 use App\Models\Category;
 use App\Models\Expense;
 use App\Models\Place;
+use App\Models\SetupProgress;
 use App\Models\Spender;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,16 +18,29 @@ class ExpenseCreationFlowTest extends TestCase{
     public function it_creates_user_with_all_dependencies_and_expense_flow(){
         //1- Create user
         $user = User::factory()->create();
-        //dump("user : ",$user->toArray());
         $this->assertDatabaseHas('users', ['id' => $user->id]);
-        $this->assertIsBool($user->is_setup_completed); // Optional: make sure it's a boolean
-        $this->assertFalse($user->is_setup_completed); // Since the factory creates it as fa
+        $this->assertIsBool($user->is_setup_completed);
+        $this->assertFalse($user->is_setup_completed);
     
+        $setupProgress = SetupProgress::create([
+            'user_id' => $user->id,
+            'current_step'=>'spenders',
+            'is_completed'=> false,
+        ]);
+        dump($setupProgress->toArray());
+
+        $getSetupProgess = $user->setupProgress;
+
+        assertTrue($getSetupProgess->user->id === $user->id);
+        dump('the setup i got : ',$getSetupProgess->toArray());
+
         //2- Create Spender
         $spender = Spender::create([
             'user_id' => $user->id,
             'name' => 'Alice'
         ]);
+
+
 
         //dump("spender : ",$spender->toArray());
         $this->assertDatabaseHas('spenders', ['name' => 'Alice']);
@@ -187,7 +201,7 @@ class ExpenseCreationFlowTest extends TestCase{
             ];
         });
         
-        dump("expenses : ",$expenses->toArray());
+        // dump("expenses : ",$expenses->toArray());
 
         $expectedExpense1 = [
             'id' => $expense1->id,

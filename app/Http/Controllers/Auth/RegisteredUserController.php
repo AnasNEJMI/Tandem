@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\SetupProgress;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -42,10 +43,18 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        SetupProgress::create([
+            'user_id' => $user->id,
+            'current_step' => 'spenders',
+            'is_completed' => false,
+        ]);
+
         event(new Registered($user));
 
         Auth::login($user);
 
-        return to_route('test-route');
+        return to_route('setup.spenders');
     }
+
+
 }

@@ -22,7 +22,7 @@ const expectedProp = [
   },
   {
     id : 2,
-    name : "hihi",
+    name : "Restaurants",
     places : [],
   },
   {
