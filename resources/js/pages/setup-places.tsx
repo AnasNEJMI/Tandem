@@ -1,49 +1,23 @@
 import { Button } from '@/components/ui/button'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AccountSetupLayout from '@/layouts/acount-setup-layout';
 import { placesPerCategory, specialCategories } from '@/lib/data';
-import { SharedData } from '@/types';
+import { Category,SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react'
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
-
-type placeType = {
-  name : string,
-}
-
-const expectedProp = [
-  {
-    id : 1,
-    name : "Courses",
-    places : [],
-  },
-  {
-    id : 2,
-    name : "Restaurants",
-    places : [],
-  },
-  {
-    id : 3,
-    name : "Vêtements",
-    places : [],
-  },
-  {
-    id : 4,
-    name : "Chaussures",
-    places : [] as placeType[],
-  },
-]
-
-const SetupPlaces = () => {
+const SetupPlaces = ({categories} : {categories : Category[]}) => {
   const [selectedCategory, setSelectedCategory] = useState(specialCategories[0]);
+
+  const initialCategories = categories.map((category) => ({
+    ...category,
+    places: [{name : ''}],
+  }));
+  const {data, setData, processing, post, errors} = useForm({
+    'categories' : initialCategories,
+  });
   const {delete : destroy} = useForm();
-  const {data, setData, processing, errors} = useForm({
-    'categories' : expectedProp,
-  })
-  const { auth } = usePage<SharedData>().props;
 
   const handleSubmit =(e : React.FormEvent) => {
     e.preventDefault();
@@ -51,19 +25,27 @@ const SetupPlaces = () => {
       preserveScroll : false,
     });
   }
+  
+  const handleSubmitPlaces =(e : React.FormEvent) => {
+    e.preventDefault();
+
+    post('/setup/places', {
+      preserveScroll : false,
+    });
+  }
 
   useEffect(() => {
-    var filledProp = expectedProp;
+    console.log(categories);
+    let initializeCategoriesWithPlaces = categories.map((category) => {
+      var specialCat = placesPerCategory.find((cat) => cat.category_name === category.name);
+      return {
+        id : category.id,
+        name : category.name,
+        places : specialCat!.places.map((place) => {return {name : place}}),
+      };
+    })
 
-    expectedProp.forEach(item => {
-      var specialCat = placesPerCategory.find((cat) => cat.category_name === item.name);
-
-      if(specialCat !== undefined){
-        item.places = specialCat.places.map((place) => {return {name : place} as placeType});
-      }
-    });
-
-    setData('categories', filledProp);
+    setData('categories', initializeCategoriesWithPlaces);
   }, [])
 
   useEffect(() => {
@@ -83,7 +65,6 @@ const SetupPlaces = () => {
           return cat;
         }
       })
-      // console.log('updatedCategories after removing the place : ', updatedCategories)
       setData('categories', updatedCategories);
     }else{
       var updatedCategories = data.categories.map((cat) => {
@@ -94,34 +75,15 @@ const SetupPlaces = () => {
           return cat;
         }
       })
-      // console.log('updatedCategories after adding the place : ',selectedPlace, ' to the category :', category, ' data result : ',updatedCategories)
       setData('categories', updatedCategories);
     }
-
-    // console.log('does data contain the place :', selectedPlace, ' ? ', data.categories.find((category) => category.name === "Courses")?.places.some((place) => place.name === selectedPlace))
   }
-  
-
-  // const updatePlaces = (place : string) => {
-  //   if(data.places.some(cat => cat.name === place)){
-  //     setData('places', data.places.filter((pl) => {return pl.name !== place;}));
-  //   }else{
-  //     setData('places', [...data.places, {'name' : place}]);
-  //   }
-
-  //   console.log('category ', place, ' in ? ', data.places.some(pl => pl.name === place));
-  // }
 
   const updateSelectedCategory = (category : string) => {
     if(selectedCategory === category) return;
     setSelectedCategory(category);
   }
 
-  useEffect(() => {
-    // console.log('places : ',placesPerCategory.find((category) => category.category_name === selectedCategory)?.places);
-  }, [selectedCategory])
-  
-  
   return (
     <AccountSetupLayout>
       <p className='flex flex-col items-start gap-2 mt-2 bg-white border border-card-border shadow-md rounded-md p-2'>
@@ -129,82 +91,70 @@ const SetupPlaces = () => {
         <span className='text-sm text-typography text-pretty'>Affinez vos choix pour ces catégories en particulier.</span>
       </p>
       
-      <div className='h-px w-full bg-card-border mt-2'></div>
-      <span className='text-xs text-muted-foreground text-pretty'>{`(tous les lieux sont sélectionnés par défaut)`}</span>
+      <div className='h-px w-full bg-card-border mt-2'></div> 
+      <form onSubmit={handleSubmitPlaces} className='grow flex flex-col mt-10'>
+        <div className='grow'>
+          <Carousel
+            opts={{align : "start", loop : true}}
+            className='w-full max-w-full mt-4'
+          >
+            <CarouselContent className="font-medium overflow-visible">
+              {
+                data.categories.map((selectedCat, index)=>{
+                  if(!specialCategories.includes(selectedCat.name)) return;
+                  return (
+                    <CarouselItem key={`selected-category-${selectedCat.name}`} className="courses-input basis-1/3 rounded-md">
+                      <div className='w-full rounded-md h-full flex items-center justify-center'>
+                        <input disabled = {processing} type="radio" id={`selected-category-${selectedCat.name}`} name="categories" value={selectedCat.name} className="w-0 h-0 appearance-none" checked = {selectedCategory === selectedCat.name} onChange={(e) => updateSelectedCategory(e.target.value)}/>
+                        <label htmlFor={`selected-category-${selectedCat.name}`} className={`cursor-pointer rounded-md ${selectedCategory === selectedCat.name? "bg-primary text-primary-foreground" : "bg-transparent border border-card-border text-typography"} text-xs w-full h-full py-2 flex items-center justify-center select-none`}>{selectedCat.name}</label>
+                      </div>
+                    </CarouselItem>
+                  )
+                })
+              }
+            </CarouselContent>
+          </Carousel>
 
-      <div className='grow mt-10'>
-        <Carousel
-          opts={{align : "start", loop : true}}
-          className='w-full max-w-full mt-4'
-        >
-          <CarouselContent className="font-medium overflow-visible">
-            {
-              data.categories.map((selectedCat, index)=>{
-                if(!specialCategories.includes(selectedCat.name)) return;
-                return (
-                  <CarouselItem key={`selected-category-${selectedCat.name}`} className="courses-input basis-1/3 rounded-md">
-                    <div className='w-full rounded-md h-full flex items-center justify-center'>
-                      <input disabled = {processing} type="radio" id={`selected-category-${selectedCat.name}`} name="categories" value={selectedCat.name} className="w-0 h-0 appearance-none" checked = {selectedCategory === selectedCat.name} onChange={(e) => updateSelectedCategory(e.target.value)}/>
-                      <label htmlFor={`selected-category-${selectedCat.name}`} className={`cursor-pointer rounded-md ${selectedCategory === selectedCat.name? "bg-primary text-primary-foreground" : "bg-transparent border border-card-border text-typography"} text-xs w-full h-full py-2 flex items-center justify-center select-none`}>{selectedCat.name}</label>
-                    </div>
-                  </CarouselItem>
-                )
-              })
-            }
-          </CarouselContent>
-        </Carousel>
+          <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
+          <p className='flex items-start flex-col '>
+            <span className="text-start text-muted-foreground text-sm">Les lieux les plus fréquentés</span>
+            <span className='text-xs text-muted-foreground text-pretty'>{`(toutes les lieux sont sélectionnées par défaut)`}</span>
+          </p>
+          <AnimatePresence>
+              {
+                <motion.div
+                    className="mt-4"
+                    key={`category-${selectedCategory}-places`}
+                    initial = {{opacity:0, y:20}}
+                    animate = {{opacity:1, y:0, transition :{delay : 0.15}}}
+                    exit={{opacity:0, y:20}}
+                    transition={{duration:0.15, ease:"easeOut"}}
+                  >
+                    <ul className="relative flex items-center justify-start gap-2 flex-wrap mt-2">
+                      {
+                        placesPerCategory.find((category) => category.category_name === selectedCategory)?.places.map((coursesPlace, index) => {
 
-        {/* <div className='h-px w-full bg-card-border my-4'></div> */}
+                          return (
+                          <li 
+                            key={`${selectedCategory}-${index}`} 
+                            className={`cursor-pointer rounded-md ${processing? "pointer-events-none" : ""} ${data.categories.find((category) => category.name === selectedCategory)?.places.some((place) => place.name === coursesPlace)? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-card-border text-typography"} border text-xs py-1 px-2 flex items-center justify-center select-none`} 
+                            onClick={() => updateSelectedPlaces(selectedCategory, coursesPlace)}>
+                            {coursesPlace}
+                          </li>
+                          )
+                        })
+                      }
+                    </ul>
+                </motion.div>
+              }
+          </AnimatePresence>
+        </div>
 
-        <AnimatePresence>
-            {
-              specialCategories.includes(selectedCategory) &&
-              <motion.div
-                  className="mt-2"
-                  key={`category-${selectedCategory}-places`}
-                  initial = {{opacity:0, y:20}}
-                  animate = {{opacity:1, y:0, transition :{delay : 0.15}}}
-                  exit={{opacity:0, y:20}}
-                  transition={{duration:0.15, ease:"easeOut"}}
-                >
-                  <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
-                  <span className="text-start text-sm">Lieux</span>
-                  <ul className="relative flex items-center justify-start gap-2 flex-wrap mt-2">
-                    {
-                      placesPerCategory.find((category) => category.category_name === selectedCategory)?.places.map((coursesPlace, index) => {
-
-                        return (
-                        <li 
-                          key={`${selectedCategory}-${index}`} 
-                          className={`cursor-pointer rounded-md ${processing? "pointer-events-none" : ""} ${data.categories.find((category) => category.name === selectedCategory)?.places.some((place) => place.name === coursesPlace)? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-card-border text-typography"} border text-xs py-1 px-2 flex items-center justify-center select-none`} 
-                          onClick={() => updateSelectedPlaces(selectedCategory, coursesPlace)}>
-                          {coursesPlace}
-                        </li>
-                        )
-                      })
-                    }
-                  </ul>
-              </motion.div>
-            }
-        </AnimatePresence>
-
-        {/* <form className='flex gap-4 flex-wrap'>
-          {
-            coursesPlaces.map((place, index) => (
-              <div key={`category-${place}`} className='rounded-md h-full flex items-center justify-center'>
-                <input disabled = {processing} type="radio" id={`category-${place}`} name="categories" value={place} className="w-0 h-0 appearance-none" checked = {data.places.includes({'name' : place})} onChange={(e) => updatePlaces(e.target.value)}/>
-                <label htmlFor={`category-${place}`} className={`cursor-pointer rounded-md ${data.places.some(pl => pl.name === place)? "bg-primary border border-primary text-primary-foreground" : "bg-transparent border border-card-border text-typography"} text-xs w-full h-full px-4 py-2 flex items-center justify-center select-none`}>{place}</label>
-              </div>
-            ))
-          }
-        </form> */}
-      </div>
-      
-      <form onSubmit={handleSubmit} method="POST">
         <Button type='submit' className='w-full'>
           Confirmer
         </Button>
       </form>
+
     </AccountSetupLayout>
   )
 }

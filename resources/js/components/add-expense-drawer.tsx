@@ -21,74 +21,92 @@ import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel"
 import { AnimatePresence } from "motion/react"
 import { Textarea } from "./ui/textarea";
 import { useForm } from "@inertiajs/react";
-import { Inertia, Method } from '@inertiajs/inertia';
+import { CategoryWithPlaces, Spender } from "@/types";
+import InputError from "./input-error";
 
-const expenseCategories = ["Courses","Loyer","Électricité","Gaz","Voyage","Restaurant","Loisirs"];
-const coursesLocations = ["E-Leclerc", "Lidl", "Marka Market", "Aldi", "Carrefour", "Marguerite", "Boulangerie", "H-Market", "Action", "Primark"];
-const loisirsActivities = ["Sortie", "Restaurant", "Magasin", "Cinéma"];
-
-export function AddExpenseDrawer() {
+export function AddExpenseDrawer({categories, spenders} : {categories : CategoryWithPlaces[],spenders : Spender[],}) {
   const [isOpen, setIsOpen] = React.useState(false);
   const {data, setData, post, processing, reset, errors} = useForm({
     amount : '',
     date : '',
-    spender : '',
-    category : '',
-    place : '',
+    spender_id : -1,
+    category_id : categories[0].id,
+    place_ids : [] as number[],
     comment : '',
   })
   const [amountInteger, setAmountInteger] = React.useState<string>("0");
   const [amountDecimal, setAmountDecimal] = React.useState<string>("0");
   const [date, setDate] = React.useState<Date>();
-  const [spender, setSpender] = React.useState<string>("Anas");
-  const [category, setCategory] = React.useState<string>("Courses");
-  const [selectedPlaces, setSelectedPlaces] = React.useState<string[]>([]);
+  const [selectedSpenderId, setSelectedSpenderId] = React.useState<number>(-1);
+  const [selectedCategoryId, setSelectedCategoryId] = React.useState<number>(categories[0].id);
+  const [selectedPlaceIds, setSelectedPlaceIds] = React.useState<number[]>([]);
   const [comment, setComment] = React.useState<string>('');
 
-  const updateCategory = (selectedCategory : string) => {
-    if(category === selectedCategory) return; 
-    setSelectedPlaces([]);
-    setCategory(selectedCategory);
+  const updateSelectedCategoryId = (categoryId : number) => {
+    if(selectedCategoryId === categoryId) return; 
+    setSelectedPlaceIds([]);
+    setSelectedCategoryId(categoryId);
   }
 
-  const updateSelectedLocations = (selectedLocation : string) =>{
-    if(selectedPlaces.includes(selectedLocation)){
-      let filteredLocations = selectedPlaces.filter(location => location != selectedLocation);
-      setSelectedPlaces(filteredLocations)
+  const updateSelectedPlaceIds = (placeId : number) =>{
+    if(selectedPlaceIds.includes(placeId)){
+      let filteredLocations = selectedPlaceIds.filter(location => location != placeId);
+      setSelectedPlaceIds(filteredLocations)
     }else{
-      let updatedSelectedLocations = [...selectedPlaces, selectedLocation]
-      setSelectedPlaces(updatedSelectedLocations);
+      let updatedSelectedLocations = [...selectedPlaceIds, placeId]
+      setSelectedPlaceIds(updatedSelectedLocations);
     }
   }
 
-  React.useEffect(() => {
-    setData('amount', amountInteger+"."+amountDecimal);
-    if(date){
-      setData('date', date.toISOString().slice(0,10));
-    }
-    setData('spender', spender);
-    setData('category', category);
-    setData('place', selectedPlaces.join(', '));
-    setData('comment', comment);
-
-  }, [amountInteger, amountDecimal, category, selectedPlaces, date, spender, comment])
-  
   const handleSubmit = (e : React.FormEvent) => {
     e.preventDefault();
+
     post('/expenses', {
       only : ['expenses'],
       onSuccess : () => {
         setAmountInteger('0');
         setAmountDecimal('0');
         setDate(undefined);
-        setSpender("Anas");
-        setCategory("Courses");
-        setSelectedPlaces([]);
+        setSelectedSpenderId(-1);
+        setSelectedCategoryId(categories[0].id);
+        setSelectedPlaceIds([]);
         setComment("");
         reset();
       }
     })
   }
+
+
+
+
+  React.useEffect(() => {
+    setData('amount', amountInteger+"."+amountDecimal);
+  }, [amountInteger, amountDecimal])
+  
+  React.useEffect(() => {
+    if(date){
+      setData('date', date.toISOString().slice(0,10));
+    }
+  }, [date])
+
+  React.useEffect(() => {
+    setData('spender_id', selectedSpenderId);
+  }, [selectedSpenderId])
+
+  React.useEffect(() => {
+    setData('place_ids', selectedPlaceIds);
+  }, [selectedPlaceIds])
+  
+  React.useEffect(() => {
+    setData('category_id', selectedCategoryId);
+  }, [selectedCategoryId])
+  
+  React.useEffect(() => {
+    setData('comment', comment);
+  }, [comment])
+
+
+  
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -99,43 +117,72 @@ export function AddExpenseDrawer() {
           <DrawerHeader className="mt-6">
             <DrawerTitle>Création d'une dépense</DrawerTitle>
             <DrawerDescription>Formulaire de dépense</DrawerDescription>
-            <DrawerDescription>{JSON.stringify(errors)}</DrawerDescription>
+            {/* <DrawerDescription>{JSON.stringify(errors)}</DrawerDescription> */}
           </DrawerHeader>
           <div className="py-4 pb-0 w-full flex flex-col items-center gap-2">
             <div className="flex items-center justify-center gap-4 w-full">
-              <Input disabled = {processing} type='number' min={0} value={amountInteger} onChange={e => setAmountInteger(e.target.value)}  max={999999} onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}} className="text-5xl text-center font-bold tracking-tighter py-10 w-32"/>
+              <Input 
+                disabled = {processing}
+                type='number'
+                min={0}
+                max={999999}
+                value={amountInteger}
+                onChange={e => setAmountInteger(e.target.value)}
+                onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}}
+                className={`text-5xl text-center font-bold tracking-tighter py-10 w-32 ${errors.amount? "border-red-400 border-2" : ""}`}/>
               <span className="text-typography font-black text-xl"> , </span>
-              <Input disabled = {processing} type='number' min={0} value={amountDecimal} onChange={e => setAmountDecimal(e.target.value)} max={99} onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}} className="text-5xl text-center font-bold tracking-tighter py-10 w-24"/>
+              <Input
+                disabled = {processing}
+                type='number'
+                min={0}
+                value={amountDecimal}
+                onChange={e => setAmountDecimal(e.target.value)}
+                max={99}
+                onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}}
+                className={`text-5xl text-center font-bold tracking-tighter py-10 w-24 ${errors.amount? "border-red-400 border-2" : ""}`}/>
               <span className="text-typography font-black text-xl"> €</span>
             </div>
             <div className="text-[0.70rem] text-typography">
               Montant de la dépense
             </div>
+            <div className="w-full">
+            {
+              errors.amount && <InputError className="text-pretty" message="Merci de souscrire un montant de dépense correct."/>
+            }
+            </div>
           </div>
           <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
           <div className="flex items-center justify-center gap-6">
             <span className="text-sm text-typography">Date</span>
-            <ExpenseDatePicker date = {date} setDate = {setDate}/>
+            <ExpenseDatePicker error = {errors.date} date = {date} setDate = {setDate}/>
           </div>
+          {
+            errors.date && <InputError className="mt-2 text-pretty" message="Merci de souscrire une date correcte."/>
+          }
           <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-typography">Qui a dépensé?</span>
-            <SpenderDropdown spender={spender} setSpender={setSpender}/>
+            <SpenderDropdown error = {errors.spender_id} spenders = {spenders} spenderId={selectedSpenderId} setSpenderId={setSelectedSpenderId}/>
           </div>
+          {
+            errors.date && <InputError className="mt-2 text-pretty" message="Merci de sélectionner la personne qui réalise cette dépense."/>
+          }
           <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
           <div className="relative">
             <span className="text-sm text-typography">Catégorie de dépense</span>
             <Carousel
               opts={{align : "start", loop : true}}
-              className='w-full max-w-full mt-4'
+              className='w-full max-w-full mt-4 relative'
             >
-              <CarouselContent className=" font-medium overflow-visible">
+              {/* <div className="absolute w-10 -right-2 h-full bg-gradient-to-l from-background to-transparent z-20"></div> */}
+              {/* <div className="absolute w-10 -left-2 h-full bg-gradient-to-r from-background to-transparent z-20"></div> */}
+              <CarouselContent className="relative z-10 font-medium overflow-visible">
                 {
-                  expenseCategories.map((expenseType, index)=>(
-                    <CarouselItem key={index} className="courses-input basis-1/4 rounded-md">
+                  categories.map((category, index)=>(
+                    <CarouselItem key={index} className="courses-input basis-1/3 rounded-md">
                       <div className='w-full rounded-md h-full flex items-center justify-center'>
-                        <input disabled = {processing} type="radio" id={`expense-category-${index+1}`} name="categories" value={expenseType} className="w-0 h-0 appearance-none" checked = {category === expenseType} onChange={(e) => updateCategory(e.target.value)}/>
-                        <label htmlFor={`expense-category-${index+1}`} className={`cursor-pointer rounded-md ${category === expenseType? "bg-primary text-primary-foreground" : "bg-transparent border border-card-border text-typography"} text-xs w-full h-full py-2 flex items-center justify-center`}>{expenseType}</label>
+                        <input disabled = {processing} type="radio" id={`expense-category-${index+1}`} name="categories" value={category.id} className="w-0 h-0 appearance-none" checked = {selectedCategoryId === category.id} onChange={(e) => updateSelectedCategoryId(Number(e.target.value))}/>
+                        <label htmlFor={`expense-category-${index+1}`} className={`cursor-pointer rounded-md ${selectedCategoryId === category.id? "bg-primary text-primary-foreground" : "bg-transparent border border-card-border text-typography"} text-xs w-full h-full py-2 flex items-center justify-center text-center`}>{category.name}</label>
                       </div>
                     </CarouselItem>
                   ))
@@ -144,10 +191,9 @@ export function AddExpenseDrawer() {
             </Carousel>
             <AnimatePresence>
               {
-                category === "Courses" &&
                 <motion.div
-                  className="mt-2"
-                  key="courses-location-key"
+                  className="mt-2  flex flex-col"
+                  key={`${selectedCategoryId}-places`}
                   initial = {{opacity:0, y:20}}
                   animate = {{opacity:1, y:0, transition :{delay : 0.15}}}
                   exit={{opacity:0, y:20}}
@@ -155,13 +201,13 @@ export function AddExpenseDrawer() {
                 >
                   <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
                   <span className="text-start text-sm">Lieu</span>
-                  <ul className="relative flex items-center justify-start gap-2 flex-wrap mt-2">
+                  <ul className="relative flex items-center justify-start gap-2 flex-wrap mt-2 scrollabe-element max-h-[150px]">
                     {
-                      coursesLocations.map((courseLocation, index) => {
+                      categories.find(category => category.id === selectedCategoryId)!.places.map((place, index) => {
 
                         return (
-                        <li key={courseLocation} className={`cursor-pointer rounded-md ${processing? "pointer-events-none" : ""} ${selectedPlaces.includes(courseLocation)? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-card-border text-typography"} border text-xs py-2 px-2 flex items-center justify-center`} onClick={() => updateSelectedLocations(courseLocation)}>
-                          {courseLocation}
+                        <li key={`${selectedCategoryId}-place-${place.name}`} className={`cursor-pointer rounded-md ${processing? "pointer-events-none" : ""} ${selectedPlaceIds.includes(place.id)? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-card-border text-typography"} border text-xs py-2 px-2 flex items-center justify-center`} onClick={() => updateSelectedPlaceIds(place.id)}>
+                          {place.name}
                         </li>
                         )
                       })
@@ -170,8 +216,8 @@ export function AddExpenseDrawer() {
                 </motion.div>
               }
 
-              {
-                category === "Loisirs" &&
+              {/* {
+                selectedCategory === "Loisirs" &&
                 <motion.div
                   className="mt-2"
                   key="loisirs-location-key"
@@ -198,7 +244,7 @@ export function AddExpenseDrawer() {
               }
 
               {
-                category === "Restaurant" &&
+                selectedCategory === "Restaurant" &&
                 <motion.div
                   className="mt-2"
                   key="restaurant-location-key"
@@ -214,7 +260,7 @@ export function AddExpenseDrawer() {
               }
 
               {
-                category === "Voyage" &&
+                selectedCategory === "Voyage" &&
                 <motion.div
                   className="mt-4"
                   key="trip-location-key"
@@ -227,7 +273,7 @@ export function AddExpenseDrawer() {
                   <span className="text-start text-sm">Destination</span>
                   <Input disabled = {processing} className="text-xs mt-2" onChange={(e) => setSelectedPlaces([e.target.value])}/>
                 </motion.div>
-              }
+              } */}
             </AnimatePresence>
           </div>
 

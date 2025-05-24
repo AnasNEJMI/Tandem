@@ -2,45 +2,73 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Expense;
+use App\Models\Place;
+use App\Models\Spender;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Log;
 
 class ExpenseController extends Controller
 {
     public function index(){
-
-        $user = auth()->user();
-        $user_id = $user->id;
+        $user_id = auth()->id();
 
         $expenses = Expense::with(['spender', 'category', 'places'])
                             ->where('user_id', $user_id)
                             ->orderByDesc('date')
                             ->get();
-
+        
+        $categories = Category::with(['places'])->where('user_id', $user_id)->get();
+        $spenders = Spender::where('user_id', $user_id)->get();
+        
+        Log::debug('categories', 
+        ['payload',
+            $categories->map(fn($category)=> [
+                'id' => $category->id,
+                'name' => $category->name,
+                'places' => $category->places->map(fn($place)=> [
+                    'id' => $place->id,
+                    'name' => $place->name,
+                ])
+            ])
+        ]);
         // $expenses = Expense::latest()->orderBy('date', 'desc')->get();
         return Inertia::render('expenses', 
                             ['expenses' => $expenses->map(function ($expense) {
-                                return [
-                                    'id' => $expense->id,
-                                    'amount' => $expense->amount,
-                                    'date' => $expense->date,
-                                    'comment' => $expense->comment,
-                                    'spender' => [
-                                        'id' => $expense->spender->id,
-                                        'name' => $expense->spender->name,
-                                    ],
-                                    'category' => [
-                                        'id' => $expense->category->id,
-                                        'name' => $expense->category->name,
-                                    ],
-                                    'places' => $expense->places->map(fn($place) => [
-                                        'id' => $place->id,
-                                        'name' => $place->name,
+                                    return [
+                                        'id' => $expense->id,
+                                        'amount' => $expense->amount,
+                                        'date' => $expense->date,
+                                        'comment' => $expense->comment,
+                                        'spender' => [
+                                            'id' => $expense->spender->id,
+                                            'name' => $expense->spender->name,
+                                        ],
+                                        'category' => [
+                                            'id' => $expense->category->id,
+                                            'name' => $expense->category->name,
+                                        ],
+                                        'places' => $expense->places->map(fn($place) => [
+                                            'id' => $place->id,
+                                            'name' => $place->name,
+                                        ]),
+                                        ];
+                                    }),
+                                    'categories' => $categories->map(fn($category)=> [
+                                        'id' => $category->id,
+                                        'name' => $category->name,
+                                        'places' => $category->places->map(fn($place)=> [
+                                            'id' => $place->id,
+                                            'name' => $place->name,
+                                        ])
                                     ]),
-
-                                ];
-                            })]);
+                                    'spenders' => $spenders->map(fn($spender)=> [
+                                        'id' => $spender->id,
+                                        'name' => $spender->name])
+                                    
+                        ]);
     }
     
     public function store(Request $request){
@@ -56,31 +84,57 @@ class ExpenseController extends Controller
 
         $user = auth()->user();
 
-        if(!$user->spenders()->where('id', $validated['spender_id'])->exists()){
+        if(!Spender::where('id', $validated['spender_id'])->exists()){
             abort(403, 'Unauthorized spender ID');
         }
 
-        if(!$user->categories()->where('id', $validated['category_id'])->exists()){
+        if(!Category::where('id', $validated['category_id'])->exists()){
             abort(403, 'Unauthorized category ID');
         }
 
-        if(!empty($validated['place_id']) && !$user->places()->where('id', $validated['place_id'])->exists()){
+        if(!empty($validated['place_id']) && !Place::where('id', $validated['place_id'])->exists()){
             abort(403, 'Unauthorized place ID');
         }
 
         $expense = Expense::create([
-            'user_id' -> $user->id,
-            'spender_id'->$validated['spender_id'],
-            'category_id'->$validated['category_id'],
-            'amount'->$validated['amount'],
-            'date'->$validated['date'],
-            'comment'->$validated['comment'] ?? null,
+            'user_id' => auth()->id(),
+            'spender_id'=>$validated['spender_id'],
+            'category_id'=>$validated['category_id'],
+            'amount'=>$validated['amount'],
+            'date'=>$validated['date'],
+            'comment'=>$validated['comment'] ?? null,
         ]);
 
         $expense->places()->attach($validated['place_ids']);
 
+        $expenses = Expense::with(['spender', 'category', 'places'])
+                            ->where('user_id', auth()->id())
+                            ->orderByDesc('date')
+                            ->get();
+        
+
+                    
         return Inertia::render('expenses', [
-            'expenses' => Expense::latest()->orderBy('date', 'desc')->get(),
+            'expenses' => $expenses->map(function ($expense) {
+                                    return [
+                                        'id' => $expense->id,
+                                        'amount' => $expense->amount,
+                                        'date' => $expense->date,
+                                        'comment' => $expense->comment,
+                                        'spender' => [
+                                            'id' => $expense->spender->id,
+                                            'name' => $expense->spender->name,
+                                        ],
+                                        'category' => [
+                                            'id' => $expense->category->id,
+                                            'name' => $expense->category->name,
+                                        ],
+                                        'places' => $expense->places->map(fn($place) => [
+                                            'id' => $place->id,
+                                            'name' => $place->name,
+                                        ]),
+                                        ];
+                                    }),
         ]);
     }
 }

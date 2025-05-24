@@ -8,7 +8,9 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\SpenderController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -54,15 +56,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/setup/spenders',[SpenderController::class, 'store'])
         ->name('setup.spenders.store');
 
-    Route::get('/setup/categories',function(){
-            return Inertia::render('setup-categories');
-        })
+    Route::get('/setup/categories',[CategoryController::class, 'index'])
         ->name('setup.categories');
+    
+    Route::post('/setup/categories',[CategoryController::class, 'store'])
+        ->name('setup.categories.store');
 
-    Route::get('/setup/places',function(){
-            return Inertia::render('setup-places');
-        })
+    Route::get('/setup/places',[PlaceController::class, 'index'])
         ->name('setup.places');
+
+    Route::post('/setup/places',[PlaceController::class, 'store'])
+        ->name('setup.places.store');
     
     Route::get('/stats',[ExpenseController::class, 'index'])
         ->name('stats');

@@ -4,17 +4,21 @@ import ParamsIconDropdownMenu from '@/components/params-icon-dropdown-menu';
 import { AddExpenseDrawer } from '@/components/add-expense-drawer';
 import MobileLayout from './mobile-layout';
 import { WalletIcon } from 'lucide-react';
+import { CategoryWithPlaces, Spender } from '@/types';
 
 const title = "Dépenses";
 
-const ExpensesMobileLayout = ({children,showExpensesRecapCard, showExpensesRepartitionCard, showExpensesDetailsCard, setShowExpensesRecapCard, setShowExpensesRepartitionCard, setShowExpensesDetailsCard}
+const ExpensesMobileLayout = ({children,categories, spenders,showExpensesRecapCard, showExpensesRepartitionCard, showExpensesDetailsCard, setShowExpensesRecapCard, setShowExpensesRepartitionCard, setShowExpensesDetailsCard}
                             :{children : React.ReactNode,
                               showExpensesRecapCard : boolean,
                               showExpensesRepartitionCard : boolean,
                               showExpensesDetailsCard : boolean,
                               setShowExpensesRecapCard : React.Dispatch<React.SetStateAction<boolean>>,
                               setShowExpensesRepartitionCard : React.Dispatch<React.SetStateAction<boolean>>,
-                              setShowExpensesDetailsCard :React.Dispatch<React.SetStateAction<boolean>>}) => {
+                              setShowExpensesDetailsCard :React.Dispatch<React.SetStateAction<boolean>>
+                              categories : CategoryWithPlaces[],
+                              spenders : Spender[],
+                            }) => {
     const targetRef = useRef<HTMLDivElement>(null);
     const {scrollYProgress} = useScroll({
         target : targetRef,
@@ -46,7 +50,7 @@ const ExpensesMobileLayout = ({children,showExpensesRecapCard, showExpensesRepar
                 <h3  className='text-xl font-medium text-typography'>{title}</h3>
               </motion.div>
               <div className='flex gap-2 items-center justify-center'>
-                <AddExpenseDrawer />
+                <AddExpenseDrawer categories = {categories} spenders = {spenders}/>
                 <ParamsIconDropdownMenu
                   showExpensesRecapCard = {showExpensesRecapCard}
                   showExpensesRepartitionCard = {showExpensesRepartitionCard}

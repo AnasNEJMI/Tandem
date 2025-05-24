@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
  
-export function ExpenseDatePicker({date, setDate} : {date: Date|undefined, setDate : React.Dispatch<React.SetStateAction<Date |undefined>>}) {
+export function ExpenseDatePicker({date, setDate, error} : {error : string | undefined, date: Date|undefined, setDate : React.Dispatch<React.SetStateAction<Date |undefined>>}) {
 
   return (
     <Popover>
@@ -19,11 +19,11 @@ export function ExpenseDatePicker({date, setDate} : {date: Date|undefined, setDa
         <Button
           variant={"outline"}
           className={cn(
-            "w-[calc(100%-48px)] justify-center text-left font-normal",
+            `w-[calc(100%-48px)] justify-center text-left font-normal ${error? "border-red-400 border-2" : ""}`,
             !date && "text-muted-foreground"
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
+          <CalendarIcon className="h-4 w-4" />
           {date ? date.toLocaleDateString("fr", { dateStyle: "full" })
                         .replace(/./, c => c.toUpperCase())
                         .replace(/,? /, ", ") : <span>Sélectionner une date</span>}
@@ -35,6 +35,7 @@ export function ExpenseDatePicker({date, setDate} : {date: Date|undefined, setDa
           selected={date}
           onSelect={setDate}
           initialFocus
+          required
         />
       </PopoverContent>
     </Popover>

@@ -1,47 +1,26 @@
 import React from 'react'
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu'
-import { Button } from './ui/button'
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
+import { Spender } from '@/types'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select'
 
-type Checked = DropdownMenuCheckboxItemProps["checked"]
 
-const SpenderDropdown = ({spender, setSpender} : {spender : string, setSpender : React.Dispatch<React.SetStateAction<string>>}) => {
-    const [spenderIsAnas, setSpenderIsAnas] = React.useState<Checked>(false);
-    const [spenderIsElham, setSpenderIsElham] = React.useState<Checked>(false);
+const SpenderDropdown = ({spenders, spenderId, setSpenderId, error} : {spenders : Spender[], spenderId : number, setSpenderId : (id : number) => void, error : string | undefined}) => {
 
-    const setAnasAsSpender = () => {
-        setSpender("Anas");
-        setSpenderIsAnas(true);
-        setSpenderIsElham(false);
-    }
-
-    const setElhamAsSpender = () => {
-        setSpender("Elham");
-        setSpenderIsElham(true);
-        setSpenderIsAnas(false);
-    }
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className='flex items-center justify-center min-w-32' variant="outline">
-           {spender}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuCheckboxItem
-          checked={spenderIsAnas}
-          onCheckedChange={setAnasAsSpender}
-        >
-          Anas
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={spenderIsElham}
-          onCheckedChange={setElhamAsSpender}
-        >
-          Elham
-        </DropdownMenuCheckboxItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <Select onValueChange={(value) => setSpenderId(Number(value))}>
+          <SelectTrigger className={`w-[180px] ${error? "border-red-400 border-2" : ""}`}>
+            <SelectValue placeholder="..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Personnes</SelectLabel>
+               {
+                spenders.map((spender, index) => (
+                  <SelectItem key={`spender${spender.id}`} value={spender.id.toString()}>{spender.name}</SelectItem>
+                ))
+               }
+            </SelectGroup>
+          </SelectContent>
+        </Select>
   )
 }
 

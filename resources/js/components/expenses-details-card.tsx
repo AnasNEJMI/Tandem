@@ -1,26 +1,29 @@
-import { Expense } from '@/types'
+import { Category, Expense, Spender } from '@/types'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import ExpenseDetails from './expense-details';
 import { ExpensesDetailsFiltersSidebar } from './expenses-details-filters-sidebar';
 import { useEffect, useState } from 'react';
 
 interface ExpensesRecapCardProp{
-    expenses : Expense[];
+    expenses : Expense[],
+    categories : Category[],
+    spenders : Spender[],
 }
 
-const expenseCategories = ["Tout","Courses","Loyer","Électricité","Gaz","Voyage","Restaurant","Loisirs"];
-const expenseSpenders = ["Anas", "Elham"];
+// const expenseCategories = ["Tout","Courses","Loyer","Électricité","Gaz","Voyage","Restaurant","Loisirs"];
+// const expenseSpenders = ["Anas", "Elham"];
 const expenseOrderBy = "Date";
 const expenseOrderByDirection = "Croissant";
-const ExpensesDetailsCard = ({expenses} : ExpensesRecapCardProp) => {
-    const [categories, setCategories] = useState<string[]>(expenseCategories);
-    const [spenders, setSpenders] = useState<string[]>(expenseSpenders);
+
+const ExpensesDetailsCard = ({expenses, categories, spenders} : ExpensesRecapCardProp) => {
+    const [selectedCategories, setSelectedCategories] = useState<Category[]>(categories);
+    const [selectedSpenders, setSelectedSpenders] = useState<Spender[]>(spenders);
     const [orderBy, setOrderBy] = useState<"Montant" | "Date">(expenseOrderBy);
     const [orderByDirection, setOrderByDirection] = useState<"Croissant" | "Décroissant">(expenseOrderByDirection);
-    const [filteredExpenses, setFilteredExpenses] = useState(expenses);
+    const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>(expenses);
     
     useEffect(() => {
-        var filterExpenses = expenses.filter((expense) => categories.includes(expense.category) && spenders.includes(expense.spender));
+        var filterExpenses = expenses.filter((expense) => selectedCategories.some((cat) => cat.id === expense.category.id) && selectedSpenders.some((sp) => sp.id === expense.spender.id));
         if(orderBy == "Date"){
             filterExpenses = sortExpensesByDate(filterExpenses, orderByDirection)
         }else if(orderBy == "Montant"){
@@ -28,10 +31,10 @@ const ExpensesDetailsCard = ({expenses} : ExpensesRecapCardProp) => {
         }
 
         setFilteredExpenses(filterExpenses);
-    }, [categories, spenders, orderBy, orderByDirection])
+    }, [selectedCategories, selectedSpenders, orderBy, orderByDirection])
     
     useEffect(() => {
-        var filterExpenses = expenses.filter((expense) => categories.includes(expense.category) && spenders.includes(expense.spender));
+        var filterExpenses = expenses.filter((expense) => selectedCategories.some((cat) => cat.id === expense.category.id) && selectedSpenders.some((sp) => sp.id === expense.spender.id));
         if(orderBy == "Date"){
             filterExpenses = sortExpensesByDate(filterExpenses, orderByDirection)
         }else if(orderBy == "Montant"){
@@ -40,6 +43,7 @@ const ExpensesDetailsCard = ({expenses} : ExpensesRecapCardProp) => {
 
         setFilteredExpenses(filterExpenses);
     }, [expenses])
+    
 
     function sortExpensesByDate(expenses : Expense[], direction : "Croissant" | "Décroissant"){
             return expenses.sort((a, b) => {
@@ -66,10 +70,12 @@ const ExpensesDetailsCard = ({expenses} : ExpensesRecapCardProp) => {
             <ExpensesDetailsFiltersSidebar 
                 categories = {categories}
                 spenders = {spenders}
+                selectedCategories = {selectedCategories}
+                selectedSpenders = {selectedSpenders}
                 orderBy = {orderBy}
                 orderByDirection = {orderByDirection}
-                setCategories = {setCategories}
-                setSpenders = {setSpenders}
+                setSelectedCategories = {setSelectedCategories}
+                setSelectedSpenders = {setSelectedSpenders}
                 setOrderBy = {setOrderBy}
                 setOrderByDirection = {setOrderByDirection}
             />

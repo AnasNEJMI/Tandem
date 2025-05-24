@@ -24,49 +24,63 @@ import { SlidersVertical } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Label } from "./ui/label";
 import { Checkbox } from "./ui/checkbox";
+import { Category, Spender } from "@/types";
 
-const expenseCategories = ["Courses","Loyer","Électricité","Gaz","Voyage","Restaurant","Loisirs"];
-const expenseSpenders = ["Anas", "Elham"];
+interface ExpenseDetailsFiltersProps{
+  categories : Category[],
+  spenders : Spender[],
+  selectedCategories : Category[],
+  selectedSpenders : Spender[],
+  orderBy : string,
+  orderByDirection : string,
+  setSelectedCategories : React.Dispatch<React.SetStateAction<Category[]>>
+  setSelectedSpenders : React.Dispatch<React.SetStateAction<Spender[]>>
+  setOrderBy : React.Dispatch<React.SetStateAction<"Montant" | "Date">>
+  setOrderByDirection : React.Dispatch<React.SetStateAction<"Croissant" | "Décroissant">>
+                                          
+}
+
+// const expenseCategories = ["Courses","Loyer","Électricité","Gaz","Voyage","Restaurant","Loisirs"];
+// const expenseSpenders = ["Anas", "Elham"];
 const expenseOrderBys = ["Montant", "Date"];
 const expenseOrderByDirection = ["Croissant", "Décroissant"];
 
-const coursesLocations = ["E-Leclerc", "Lidl", "Marka Market", "Aldi", "Carrefour", "Marguerite", "Boulangerie", "H-Market", "Action", "Primark"];
-const loisirsActivities = ["Sortie", "Restaurant", "Magasin", "Cinéma"];
+// const coursesLocations = ["E-Leclerc", "Lidl", "Marka Market", "Aldi", "Carrefour", "Marguerite", "Boulangerie", "H-Market", "Action", "Primark"];
+// const loisirsActivities = ["Sortie", "Restaurant", "Magasin", "Cinéma"];
 
 export function ExpensesDetailsFiltersSidebar({
                                               categories,
                                               spenders,
+                                              selectedCategories,
+                                              selectedSpenders,
                                               orderBy,
                                               orderByDirection,
-                                              setCategories,
-                                              setSpenders,
+                                              setSelectedCategories: setCategories,
+                                              setSelectedSpenders: setSpenders,
                                               setOrderBy,
                                               setOrderByDirection,}
-                                          :{
-                                            categories : string[],
-                                            spenders : string[],
-                                            orderBy : string,
-                                            orderByDirection : string,
-                                            setCategories : React.Dispatch<React.SetStateAction<string[]>>
-                                            setSpenders : React.Dispatch<React.SetStateAction<string[]>>
-                                            setOrderBy : React.Dispatch<React.SetStateAction<"Montant" | "Date">>
-                                            setOrderByDirection : React.Dispatch<React.SetStateAction<"Croissant" | "Décroissant">>
-                                          }) {
+                                          : ExpenseDetailsFiltersProps) {
 
   const updateCategories = (selectedCategory : string) => {
-    if(categories.includes(selectedCategory)){
-      var filterCategories = categories.filter(category => category !== selectedCategory);
-      setCategories(filterCategories)
+    if(selectedCategories.some((category) => category.name === selectedCategory)){
+      var filterCategories = selectedCategories.filter(category => category.name !== selectedCategory);
+      setCategories(filterCategories);
     }else{
-      setCategories([...categories, selectedCategory]);
+      var newCategory = categories.find((category) => category.name === selectedCategory);
+      if(newCategory !== undefined){
+        setCategories([...selectedCategories, newCategory]);
+      }
     }
   }
   const updateSpenders = (selectedSpender : string) => {
-    if(spenders.includes(selectedSpender)){
-      var filteredSpenders = spenders.filter(spender => spender !== selectedSpender);
+    if(selectedSpenders.some((spender) => spender.name ===selectedSpender)){
+      var filteredSpenders = selectedSpenders.filter(spender => spender.name !== selectedSpender);
       setSpenders(filteredSpenders)
     }else{
-      setSpenders([...spenders, selectedSpender]);
+      let newSpender = spenders.find((spender) => spender.name === selectedSpender);
+      if(newSpender !== undefined){
+        setSpenders([...selectedSpenders, newSpender]);
+      }
     }
   }
 
@@ -99,15 +113,15 @@ export function ExpensesDetailsFiltersSidebar({
           <span className="text-sm font-bold">Catégories</span>
           <ul className="flex flex-col items-start gap-2 mt-2">
             {
-              expenseCategories.map((category, index) => (
+              categories.map((category, index) => (
                 <li key={index} className="flex items-center justify-center gap-2 text-typography">
                    <Checkbox
-                      id={category}
-                      checked={categories.includes(category)}
-                      onCheckedChange={() => updateCategories(category)}
+                      id={`filter-category-${category.id}`}
+                      checked={selectedCategories.some((cat) => cat.id === category.id)}
+                      onCheckedChange={() => updateCategories(category.name)}
                     />
-                    <Label htmlFor={category} className="capitalize">
-                      {category}
+                    <Label htmlFor={`filter-category-${category.id}`} className="capitalize">
+                      {category.name}
                     </Label>
                 </li>
               ))
@@ -118,15 +132,15 @@ export function ExpensesDetailsFiltersSidebar({
         <span className="text-sm font-bold">Auteur/Autrice de la dépense</span>
         <ul className="flex flex-col items-start gap-2 mt-2">
           {
-            expenseSpenders.map((spender, index) => (
+            spenders.map((spender, index) => (
               <li key={index} className="flex items-center justify-center gap-2 text-typography">
                 <Checkbox
-                  id={spender}
-                  checked={spenders.includes(spender)}
-                  onCheckedChange={() => updateSpenders(spender)}
+                  id={`filter-spender-${spender.id}`}
+                  checked={selectedSpenders.some((sp) => sp.id === spender.id)}
+                  onCheckedChange={() => updateSpenders(spender.name)}
                 />
-                <Label htmlFor={spender} className="capitalize">
-                  {spender}
+                <Label htmlFor={`filter-spender-${spender.id}`} className="capitalize">
+                  {spender.name}
                 </Label>
               </li>
             ))
