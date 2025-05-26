@@ -69,6 +69,11 @@ export interface Place{
     name : string,
 }
 
+export interface MonthAndYear {
+    month : number,
+    year : number
+}
+
 
 export interface ExpenseForm{
     amount : number;

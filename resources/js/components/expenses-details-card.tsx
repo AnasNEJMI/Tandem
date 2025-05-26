@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import ExpenseDetails from './expense-details';
 import { ExpensesDetailsFiltersSidebar } from './expenses-details-filters-sidebar';
 import { useEffect, useState } from 'react';
+import { InfoIcon } from 'lucide-react';
 
 interface ExpensesRecapCardProp{
     expenses : Expense[],
@@ -66,7 +67,7 @@ const ExpensesDetailsCard = ({expenses, categories, spenders} : ExpensesRecapCar
     return (
     <Card className="rounded-xl mt-6  opacity-100 translate-y-0 duration-750 starting:opacity-0 starting:translate-y-6 transition-all">
         <CardHeader className="px-6 w-full pt-2 pb-0 text-left flex flex-row items-center justify-between">
-            <CardTitle className="text-xl">Détails</CardTitle>
+            <CardTitle className="text-lg">Dépenses du mois</CardTitle>
             <ExpensesDetailsFiltersSidebar 
                 categories = {categories}
                 spenders = {spenders}
@@ -81,9 +82,12 @@ const ExpensesDetailsCard = ({expenses, categories, spenders} : ExpensesRecapCar
             />
         </CardHeader>
         <CardContent className=" flex flex-col scrollabe-element gap-2">
-            <div className='flex flex-col gap-4 max-h-[350px] pt-6'>
+            <div className='flex flex-col gap-6 max-h-[350px] pt-6'>
             {
-                filteredExpenses.map((expense, index) => <ExpenseDetails expense={expense} key={index} />)
+                filteredExpenses.length > 0 && filteredExpenses.map((expense, index) => <ExpenseDetails expense={expense} key={index} />)
+            }
+            {
+                filteredExpenses.length === 0 && <div className='text-muted-foreground flex gap-2 w-full justify-center items-center text-sm flex-col'><InfoIcon size={32}/> <span className='text-pretty text-center'>Aucune dépense qui correspond aux filtres sélectionnés.</span></div>
             }
             </div>
         </CardContent>

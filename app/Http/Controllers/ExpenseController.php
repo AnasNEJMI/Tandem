@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Expense;
 use App\Models\Place;
 use App\Models\Spender;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Log;
@@ -14,9 +15,13 @@ class ExpenseController extends Controller
 {
     public function index(){
         $user_id = auth()->id();
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
 
         $expenses = Expense::with(['spender', 'category', 'places'])
                             ->where('user_id', $user_id)
+                            ->whereMonth('date', $month)
+                            ->whereYear('date', $year)
                             ->orderByDesc('date')
                             ->get();
         
@@ -66,7 +71,12 @@ class ExpenseController extends Controller
                                     ]),
                                     'spenders' => $spenders->map(fn($spender)=> [
                                         'id' => $spender->id,
-                                        'name' => $spender->name])
+                                        'name' => $spender->name
+                                    ]),
+                                    'date' => [
+                                        'month' => $month,
+                                        'year' => $year,
+                                    ]
                                     
                         ]);
     }

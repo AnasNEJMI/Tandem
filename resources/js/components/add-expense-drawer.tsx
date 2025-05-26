@@ -23,9 +23,9 @@ import { Textarea } from "./ui/textarea";
 import { useForm } from "@inertiajs/react";
 import { CategoryWithPlaces, Spender } from "@/types";
 import InputError from "./input-error";
+import { PlusIcon } from "lucide-react";
 
-export function AddExpenseDrawer({categories, spenders} : {categories : CategoryWithPlaces[],spenders : Spender[],}) {
-  const [isOpen, setIsOpen] = React.useState(false);
+export function AddExpenseDrawer({categories, spenders, open, setOpen} : {categories : CategoryWithPlaces[],spenders : Spender[], open : boolean, setOpen : React.Dispatch<React.SetStateAction<boolean>>}) {
   const {data, setData, post, processing, reset, errors} = useForm({
     amount : '',
     date : '',
@@ -72,6 +72,7 @@ export function AddExpenseDrawer({categories, spenders} : {categories : Category
         setSelectedPlaceIds([]);
         setComment("");
         reset();
+        setOpen(false);
       }
     })
   }
@@ -108,16 +109,15 @@ export function AddExpenseDrawer({categories, spenders} : {categories : Category
 
   
   return (
-    <Drawer>
+    <Drawer open = {open}  onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant="outline">Ajouter</Button>
+        <Button className="w-18 h-18"><PlusIcon/></Button>
       </DrawerTrigger>
       <DrawerContent>
-        <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="mx-auto w-full max-w-sm h-full relative px-6">
+        <form onSubmit={handleSubmit} method="POST" encType="multipart/form-data" className="mx-auto w-full max-w-lg h-full relative px-6">
           <DrawerHeader className="mt-6">
             <DrawerTitle>Création d'une dépense</DrawerTitle>
             <DrawerDescription>Formulaire de dépense</DrawerDescription>
-            {/* <DrawerDescription>{JSON.stringify(errors)}</DrawerDescription> */}
           </DrawerHeader>
           <div className="py-4 pb-0 w-full flex flex-col items-center gap-2">
             <div className="flex items-center justify-center gap-4 w-full">
@@ -129,7 +129,7 @@ export function AddExpenseDrawer({categories, spenders} : {categories : Category
                 value={amountInteger}
                 onChange={e => setAmountInteger(e.target.value)}
                 onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}}
-                className={`text-5xl text-center font-bold tracking-tighter py-10 w-32 ${errors.amount? "border-red-400 border-2" : ""}`}/>
+                className={`text-5xl md:text-5xl text-center font-bold tracking-tighter py-10 w-32 ${errors.amount? "border-red-400 border-2" : ""}`}/>
               <span className="text-typography font-black text-xl"> , </span>
               <Input
                 disabled = {processing}
@@ -139,7 +139,7 @@ export function AddExpenseDrawer({categories, spenders} : {categories : Category
                 onChange={e => setAmountDecimal(e.target.value)}
                 max={99}
                 onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}}
-                className={`text-5xl text-center font-bold tracking-tighter py-10 w-24 ${errors.amount? "border-red-400 border-2" : ""}`}/>
+                className={`text-5xl md:text-5xl text-center font-bold tracking-tighter py-10 w-24 ${errors.amount? "border-red-400 border-2" : ""}`}/>
               <span className="text-typography font-black text-xl"> €</span>
             </div>
             <div className="text-[0.70rem] text-typography">
@@ -147,7 +147,7 @@ export function AddExpenseDrawer({categories, spenders} : {categories : Category
             </div>
             <div className="w-full">
             {
-              errors.amount && <InputError className="text-pretty" message="Merci de souscrire un montant de dépense correct."/>
+              errors.amount && <InputError className="text-pretty" message="Merci de soumettre un montant de dépense correct."/>
             }
             </div>
           </div>
@@ -157,7 +157,7 @@ export function AddExpenseDrawer({categories, spenders} : {categories : Category
             <ExpenseDatePicker error = {errors.date} date = {date} setDate = {setDate}/>
           </div>
           {
-            errors.date && <InputError className="mt-2 text-pretty" message="Merci de souscrire une date correcte."/>
+            errors.date && <InputError className="mt-2 text-pretty" message="Merci de soumettre une date correcte."/>
           }
           <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
           <div className="flex items-center justify-between">
