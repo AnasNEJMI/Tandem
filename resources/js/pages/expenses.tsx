@@ -3,11 +3,10 @@ import ExpensesDetailsCard from '@/components/expenses-details-card';
 import { ExpensesDistributionChart } from '@/components/expenses-distribution-chart';
 import ExpensesMonthYearSelect from '@/components/expenses-month-year-select';
 import ExpensesPresentationElement from '@/components/expenses-presentation-element';
-import ExpensesRecapCard from '@/components/expenses-recap-card';
-import ExpensesRepartitionCard from '@/components/expenses-repartition-card';
+import ExpensesDistributionPerUserChart from '@/components/expenses-distribution-per-user-chart';
 import ExpensesMobileLayout from '@/layouts/mobile/expenses-mobile-layout';
 import { CategoryWithPlaces, Expense, MonthAndYear, Spender, type SharedData } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { InfoIcon } from 'lucide-react';
 import {useEffect, useState } from 'react';
 
@@ -28,11 +27,11 @@ export default function Expenses({expenses, categories, spenders, date} : Expens
         'date' : new Date(date.year, date.month -1),
     })
 
-    useEffect(() => {
-      console.log('expenses : ', expenses);
-      console.log('categories : ', categories);
-      console.log('spenders : ', spenders);
-    }, [])
+    // useEffect(() => {
+    //   console.log('expenses : ', expenses);
+    //   console.log('categories : ', categories);
+    //   console.log('spenders : ', spenders);
+    // }, [])
 
     useEffect(() => {
     }, [expenses])
@@ -76,8 +75,18 @@ export default function Expenses({expenses, categories, spenders, date} : Expens
                 spenders = {spenders}
             >
                 <ExpensesMonthYearSelect date = {data.date} onChange={onDateChange}/>
-                <ExpensesPresentationElement expenses = {expenses}/>
-                <ExpensesDistributionChart expenses={expenses}/>
+                {
+                    expenses.length > 0  && 
+                    <ExpensesPresentationElement expenses = {expenses}/>
+                }
+                {
+                    expenses.length > 0 && 
+                    <ExpensesDistributionChart expenses={expenses}/>
+                }
+                {
+                    expenses.length > 0 && 
+                    <ExpensesDistributionPerUserChart expenses = {expenses}/>
+                }
                 {/* {
                     showExpensesRecapCard && expenses.length > 0 && 
                     <ExpensesRecapCard expenses={expenses}/>
@@ -85,11 +94,11 @@ export default function Expenses({expenses, categories, spenders, date} : Expens
                 {
                     showExpensesRepartitionCard && expenses.length > 0 &&
                     <ExpensesRepartitionCard expenses={expenses}/>
-                }
+                } */}
                 {
                     showExpensesDetailsCard && expenses.length > 0 &&
                     <ExpensesDetailsCard expenses = {expenses} categories={categories} spenders={spenders}/>
-                } */}
+                }
 
                 {
                     expenses.length === 0 && <div className='text-muted-foreground flex gap-2 w-full justify-center items-center text-sm flex-col grow'><InfoIcon size={32}/> <span className='text-pretty text-center'>Vous n'avez aucune dépense enregistrée pour ce mois.</span></div>

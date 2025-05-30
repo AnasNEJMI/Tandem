@@ -1,5 +1,4 @@
 import * as React from "react"
-import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
  
 import { cn } from "@/lib/utils"
@@ -10,8 +9,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { fr } from "date-fns/locale"
+
+interface ExpenseDatePickerProps{
+  date : Date | undefined,
+  setDate : React.Dispatch<React.SetStateAction<Date |undefined>>,
+  error : string | undefined,
+  className? : string
+}
  
-export function ExpenseDatePicker({date, setDate, error} : {error : string | undefined, date: Date|undefined, setDate : React.Dispatch<React.SetStateAction<Date |undefined>>}) {
+export function ExpenseDatePicker({date, setDate, error, className} : ExpenseDatePickerProps) {
 
   return (
     <Popover>
@@ -19,8 +26,8 @@ export function ExpenseDatePicker({date, setDate, error} : {error : string | und
         <Button
           variant={"outline"}
           className={cn(
-            `w-[calc(100%-48px)] justify-center text-left font-normal ${error? "border-red-400 border-2" : ""}`,
-            !date && "text-muted-foreground"
+            `max-w-[calc(100%-48px)] bg-white border-0 h-10 shadow-lg justify-center text-left font-normal ${error? "border-red-400 border-2" : ""}`,
+            !date && "text-muted-foreground", className
           )}
         >
           <CalendarIcon className="h-4 w-4" />
@@ -36,6 +43,7 @@ export function ExpenseDatePicker({date, setDate, error} : {error : string | und
           onSelect={setDate}
           initialFocus
           required
+          locale={fr}
         />
       </PopoverContent>
     </Popover>

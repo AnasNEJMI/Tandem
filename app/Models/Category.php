@@ -11,7 +11,7 @@ class Category extends Model
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory, Notifiable;
 
-    protected $fillable = ['name','user_id'];
+    protected $fillable = ['name','user_id', 'color'];
 
     public function user(){
         return $this->belongsTo(User::class);

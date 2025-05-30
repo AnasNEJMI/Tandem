@@ -119,7 +119,7 @@ export function AddExpenseDrawer({categories, spenders, open, setOpen} : {catego
             <DrawerTitle>Création d'une dépense</DrawerTitle>
             <DrawerDescription>Formulaire de dépense</DrawerDescription>
           </DrawerHeader>
-          <div className="py-4 pb-0 w-full flex flex-col items-center gap-2">
+          <div className="py-2 pb-0 w-full flex flex-col items-center gap-2">
             <div className="flex items-center justify-center gap-4 w-full">
               <Input 
                 disabled = {processing}
@@ -142,7 +142,7 @@ export function AddExpenseDrawer({categories, spenders, open, setOpen} : {catego
                 className={`text-5xl md:text-5xl text-center font-bold tracking-tighter py-10 w-24 ${errors.amount? "border-red-400 border-2" : ""}`}/>
               <span className="text-typography font-black text-xl"> €</span>
             </div>
-            <div className="text-[0.70rem] text-typography">
+            <div className="text-[0.70rem] text-muted-foreground">
               Montant de la dépense
             </div>
             <div className="w-full">
@@ -153,8 +153,8 @@ export function AddExpenseDrawer({categories, spenders, open, setOpen} : {catego
           </div>
           <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
           <div className="flex items-center justify-center gap-6">
-            <span className="text-sm text-typography">Date</span>
-            <ExpenseDatePicker error = {errors.date} date = {date} setDate = {setDate}/>
+            <span className="text-sm text-typography flex-1">Date</span>
+            <ExpenseDatePicker className="w-[240px]" error = {errors.date} date = {date} setDate = {setDate}/>
           </div>
           {
             errors.date && <InputError className="mt-2 text-pretty" message="Merci de soumettre une date correcte."/>

@@ -193,7 +193,7 @@ export const categories: string[] = [
   "Téléphone",
   "Carburant",
   "Restaurants",
-  "Transports en commun",
+  "Transports",
   "Assurances",
   "Crèche",
   "École",
@@ -205,9 +205,85 @@ export const categories: string[] = [
   "Vacances",
   "Cadeaux",
   "Santé",
-  "Entretien voiture",
+  "Véhicule",
   "Dons",
   "Animaux",
   "Maison",
   "Autre"
 ];
+
+export function getColor(category : string){
+  switch(category){
+    case categories[0] :
+        return "hsl(183, 81%, 19%)";
+    case categories[1] :
+        return "hsl(177, 61%, 29%)";
+    case categories[2] :
+        return "hsl(100, 64%, 85%)";
+    case categories[3] :
+        return "hsl(35, 69%, 67%)";
+    case categories[4] :
+        return "hsl(24, 96%, 55%)";
+    case categories[5] :
+        return "hsl(359, 85%, 56%)";
+    case categories[6] :
+        return "hsl(154, 30%, 59%)";
+    case categories[7] :
+        return "hsl(197, 93%, 29%)";
+    case categories[8] :
+        return "hsl(28, 85%, 61%)";
+    case categories[9] :
+        return "hsl(13, 90%, 56%)";
+    case categories[10] :
+        return "hsl(128, 20%, 70%)";
+    case categories[11] :
+        return "hsl(35, 100%, 55%)";
+    case categories[12] :
+        return "hsl(45, 100%, 50%)";
+    case categories[13] :
+        return "hsl(114, 35%, 51%)";
+    case categories[14] :
+        return "hsl(7, 76%, 42%)";
+    case categories[15] :
+        return "hsl(55, 10%, 75%)";
+    case categories[16] :
+        return "hsl(176, 15%, 81%)";
+    case categories[17] :
+        return "hsl(195, 50%, 95%)";
+    case categories[18] :
+        return "hsl(174, 36%, 64%)";
+    case categories[19] :
+        return "hsl(49, 100%, 65%)";
+    case categories[20] :
+        return "hsl(68, 100%, 92%)";
+    case categories[21] :
+        return "hsl(74, 100%, 85%)";
+    case categories[22] :
+        return "hsl(87, 23%, 75%)";
+    case categories[23] :
+        return "hsl(56, 100%, 87%)";
+    case categories[24] :
+        return "hsl(101, 31%, 55%)";
+    default : 
+      return "hsl(189, 66%, 8%)";
+  }
+}
+
+export const getSpenderColor = (index : number) => {
+    switch(index){
+        case 0 : 
+        return "hsl(184, 29%, 27%)";
+        case 1 : 
+        return "hsl(60, 31%, 77%)";
+        case 2 : 
+        return "hsl(18, 100%, 66%)";
+        case 3 : 
+        return "hsl(23, 100%, 63%)";
+        case 4 : 
+        return "hsl(123, 8%, 55%)";
+        case 5 : 
+        return "hsl(185, 14%, 17%)";
+        default :
+        return "hsl(17, 76%, 49%)";
+    }
+}

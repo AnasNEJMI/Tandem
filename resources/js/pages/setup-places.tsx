@@ -42,6 +42,7 @@ const SetupPlaces = ({categories} : {categories : Category[]}) => {
         id : category.id,
         name : category.name,
         places : specialCat!.places.map((place) => {return {name : place}}),
+        color : category.color,
       };
     })
 
@@ -103,7 +104,7 @@ const SetupPlaces = ({categories} : {categories : Category[]}) => {
                 data.categories.map((selectedCat, index)=>{
                   if(!specialCategories.includes(selectedCat.name)) return;
                   return (
-                    <CarouselItem key={`selected-category-${selectedCat.name}`} className="courses-input basis-1/3 rounded-md">
+                    <CarouselItem key={`selected-category-${selectedCat.name}`} className="basis-1/3 rounded-md">
                       <div className='w-full rounded-md h-full flex items-center justify-center'>
                         <input disabled = {processing} type="radio" id={`selected-category-${selectedCat.name}`} name="categories" value={selectedCat.name} className="w-0 h-0 appearance-none" checked = {selectedCategory === selectedCat.name} onChange={(e) => updateSelectedCategory(e.target.value)}/>
                         <label htmlFor={`selected-category-${selectedCat.name}`} className={`cursor-pointer rounded-md ${selectedCategory === selectedCat.name? "bg-primary text-primary-foreground" : "bg-transparent border border-card-border text-typography"} text-xs w-full h-full py-2 flex items-center justify-center select-none`}>{selectedCat.name}</label>

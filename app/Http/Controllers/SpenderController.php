@@ -20,6 +20,7 @@ class SpenderController extends Controller
             'spenders' => collect($request->input('spenders'))
                 ->map(fn ($spender) => [
                     'name' => trim($spender['name'] ?? ''),
+                    'color' => $spender['color'],
                 ])
                 ->all(),
         ]);
@@ -28,12 +29,16 @@ class SpenderController extends Controller
         $validated = $request->validate([
             'spenders' => 'required|array|min:1',
             'spenders.*.name' => 'required|string|min:2|max:100',
+            'spenders.*.color' => 'regex:/^hsl\(\d{1,3},\s?\d{1,3}%,\s?\d{1,3}%\)$/i',
         ]);
+
+        Log::debug("spenders", ['value', $validated['spenders']]);
 
         Spender::insert(
             collect($validated['spenders'])->map(fn($spender) => [
                 'user_id' => auth()->id(),
                 'name' => $spender['name'],
+                'color' => $spender['color'],
                 'created_at'=> now(),
                 'updated_at'=> now(),
             ])->all()

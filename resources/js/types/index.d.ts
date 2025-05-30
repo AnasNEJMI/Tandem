@@ -57,11 +57,13 @@ export interface Expense{
 export interface Spender{
     id : number,
     name : string,
+    color : string,
 }
 
 export interface Category{
     id : number,
     name : string,
+    color : string,
 }
 
 export interface Place{
@@ -92,5 +94,6 @@ export interface Category{
 export interface CategoryWithPlaces{
     id : number,
     name : string,
+    color : string,
     places : Place[],
 }

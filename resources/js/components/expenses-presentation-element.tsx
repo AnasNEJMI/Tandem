@@ -1,5 +1,6 @@
 import { Expense } from '@/types';
 import React from 'react'
+import AnimatedCounter from './animated-counter';
 
 interface ExpensePresentationProps{
     expenses : Expense[],
@@ -30,7 +31,7 @@ const ExpensesPresentationElement = ({expenses} : ExpensePresentationProps) => {
     }
   return (
     <div className='w-full flex flex-col items-center mt-10'>
-        <span className='font-black text-4xl'>{calculateTotalAmount(expenses).toString().split('.').join(',')} €</span>
+        <div><AnimatedCounter to = {calculateTotalAmount(expenses)} duration={1.5} className='font-black text-4xl'/><span className='font-black text-4xl'> €</span></div>
         <span className='text-muted-foreground font-light text-xs'>Total Dépensé</span>
     </div>
   )

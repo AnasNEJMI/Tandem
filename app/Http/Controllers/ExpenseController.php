@@ -50,10 +50,12 @@ class ExpenseController extends Controller
                                         'spender' => [
                                             'id' => $expense->spender->id,
                                             'name' => $expense->spender->name,
+                                            'color' => $expense->spender->color
                                         ],
                                         'category' => [
                                             'id' => $expense->category->id,
                                             'name' => $expense->category->name,
+                                            'color' => $expense->category->color,
                                         ],
                                         'places' => $expense->places->map(fn($place) => [
                                             'id' => $place->id,
@@ -64,6 +66,7 @@ class ExpenseController extends Controller
                                     'categories' => $categories->map(fn($category)=> [
                                         'id' => $category->id,
                                         'name' => $category->name,
+                                        'color' => $category->color,
                                         'places' => $category->places->map(fn($place)=> [
                                             'id' => $place->id,
                                             'name' => $place->name,
@@ -71,7 +74,8 @@ class ExpenseController extends Controller
                                     ]),
                                     'spenders' => $spenders->map(fn($spender)=> [
                                         'id' => $spender->id,
-                                        'name' => $spender->name
+                                        'name' => $spender->name,
+                                        'color' => $spender->color
                                     ]),
                                     'date' => [
                                         'month' => $month,
@@ -134,10 +138,12 @@ class ExpenseController extends Controller
                                         'spender' => [
                                             'id' => $expense->spender->id,
                                             'name' => $expense->spender->name,
+                                            'color' => $expense->spender->color
                                         ],
                                         'category' => [
                                             'id' => $expense->category->id,
                                             'name' => $expense->category->name,
+                                            'color' => $expense->category->color,
                                         ],
                                         'places' => $expense->places->map(fn($place) => [
                                             'id' => $place->id,

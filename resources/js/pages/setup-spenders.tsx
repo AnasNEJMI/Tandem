@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AccountSetupLayout from '@/layouts/acount-setup-layout';
+import { getSpenderColor } from '@/lib/data';
 import { SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react'
 import { PlusIcon, Trash2Icon } from 'lucide-react';
@@ -13,6 +14,7 @@ const SetupSpenders = () => {
     'spenders' : [
       {
         'name' : '',
+        'color' : '',
       }
     ],
   })
@@ -36,14 +38,15 @@ const SetupSpenders = () => {
     console.log("data : ",data);
   }, [data])
 
-  const indexToPo1istion = (index : number) =>{
+  const indexToPosition = (index : number) =>{
     if(index === 0) return '1ère';
     
     return `${index+1}ème`;
   }
 
   const addSpender = () => {
-    setData('spenders', [...data.spenders, {'name' : ''}]);
+    const index = data.spenders.length;
+    setData('spenders', [...data.spenders, {'name' : '', 'color' : getSpenderColor(index)}]);
   }
   
   const deleteSpenderAtIndex = (index : number) => {
@@ -64,13 +67,13 @@ const SetupSpenders = () => {
           {
           data.spenders.map((spender, index) => (
             <div key={index} className='flex flex-col gap-2 mt-4'>
-              <Label className='text-sm'>Nom de la {indexToPo1istion(index)} personne</Label>
+              <Label className='text-sm'>Nom de la {indexToPosition(index)} personne</Label>
               <div className='flex items-center gap-2'>
                 <Input 
                   type='text'
                   disabled = {processing}
                   value={spender.name}
-                  onChange={e => setData('spenders', data.spenders.map((s, i) => {return i === index? {'name' : e.target.value} : {'name' : s.name}}))}
+                  onChange={e => setData('spenders', data.spenders.map((s, i) => {return i === index? {'name' : e.target.value, 'color': getSpenderColor(i)} : {'name' : s.name, 'color': s.color}}))}
                   placeholder='Saisissez le nom'
                   required
                   minLength={2}
