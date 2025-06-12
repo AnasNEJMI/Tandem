@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Log;
+use App\Services\MonthExpensesStatsService;
 
 class ExpenseController extends Controller
 {
@@ -25,20 +26,18 @@ class ExpenseController extends Controller
                             ->orderByDesc('date')
                             ->get();
         
+        $amount = $expenses->sum('amount');
+        
         $categories = Category::with(['places'])->where('user_id', $user_id)->get();
         $spenders = Spender::where('user_id', $user_id)->get();
         
-        Log::debug('categories', 
-        ['payload',
-            $categories->map(fn($category)=> [
-                'id' => $category->id,
-                'name' => $category->name,
-                'places' => $category->places->map(fn($place)=> [
-                    'id' => $place->id,
-                    'name' => $place->name,
-                ])
-            ])
-        ]);
+        $categoryStats = MonthExpensesStatsService::calculatePerCategoryStats($expenses);
+        $spenderStats = MonthExpensesStatsService::calculatePerSpenderStats($expenses);
+
+        Log::debug('payload', 
+        [ 'sps', $spenderStats]);
+
+
         // $expenses = Expense::latest()->orderBy('date', 'desc')->get();
         return Inertia::render('expenses', 
                             ['expenses' => $expenses->map(function ($expense) {
@@ -80,7 +79,12 @@ class ExpenseController extends Controller
                                     'date' => [
                                         'month' => $month,
                                         'year' => $year,
-                                    ]
+                                    ],
+                                    'stats' => [
+                                        'categories' => $categoryStats,
+                                        'spenders' => $spenderStats,
+                                    ],
+                                    'amount' => $amount,
                                     
                         ]);
     }
@@ -121,36 +125,48 @@ class ExpenseController extends Controller
 
         $expense->places()->attach($validated['place_ids']);
 
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
         $expenses = Expense::with(['spender', 'category', 'places'])
                             ->where('user_id', auth()->id())
+                            ->whereMonth('date', $month)
+                            ->whereYear('date', $year)
                             ->orderByDesc('date')
                             ->get();
         
 
-                    
+        $amount = $expenses->sum('amount');
+        $categoryStats = MonthExpensesStatsService::calculatePerCategoryStats($expenses);
+        $spenderStats = MonthExpensesStatsService::calculatePerSpenderStats($expenses);
+            
         return Inertia::render('expenses', [
-            'expenses' => $expenses->map(function ($expense) {
-                                    return [
-                                        'id' => $expense->id,
-                                        'amount' => $expense->amount,
-                                        'date' => $expense->date,
-                                        'comment' => $expense->comment,
-                                        'spender' => [
-                                            'id' => $expense->spender->id,
-                                            'name' => $expense->spender->name,
-                                            'color' => $expense->spender->color
-                                        ],
-                                        'category' => [
-                                            'id' => $expense->category->id,
-                                            'name' => $expense->category->name,
-                                            'color' => $expense->category->color,
-                                        ],
-                                        'places' => $expense->places->map(fn($place) => [
-                                            'id' => $place->id,
-                                            'name' => $place->name,
-                                        ]),
-                                        ];
+                                    'expenses' => $expenses->map(function ($expense) {
+                                        return [
+                                            'id' => $expense->id,
+                                            'amount' => $expense->amount,
+                                            'date' => $expense->date,
+                                            'comment' => $expense->comment,
+                                            'spender' => [
+                                                'id' => $expense->spender->id,
+                                                'name' => $expense->spender->name,
+                                                'color' => $expense->spender->color
+                                            ],
+                                            'category' => [
+                                                'id' => $expense->category->id,
+                                                'name' => $expense->category->name,
+                                                'color' => $expense->category->color,
+                                            ],
+                                            'places' => $expense->places->map(fn($place) => [
+                                                'id' => $place->id,
+                                                'name' => $place->name,
+                                            ]),
+                                            ];
                                     }),
+                                    'stats' => [
+                                        'categories' => $categoryStats,
+                                        'spenders' => $spenderStats,
+                                    ],
+                                    'amount' => $amount,
         ]);
     }
 }

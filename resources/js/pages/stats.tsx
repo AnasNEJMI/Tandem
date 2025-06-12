@@ -1,22 +1,42 @@
-import { Expense, type SharedData } from '@/types';
+
+import { Expense, MonthStats, SpendingEvolutionPerCategoryStats, SpendingTrendPerSpenderStats, type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import StatsMobileLayout from '@/layouts/mobile/stats-mobile-layout';
+import { useEffect } from 'react';
+import GenralSpendingEvolution from '@/components/general-spending-evolution';
+import SpendingTrendPerSpender from '@/components/spending-trend-per-spender';
+import MonthlySpendingStats from '@/components/monthly-spending-stats';
 
 interface StatsProps{
     expenses : Expense[];
+    general_stats : SpendingEvolutionPerCategoryStats,
+    per_spender_stats : SpendingTrendPerSpenderStats,
+    month_stats : MonthStats[];
 }
 
-export default function Stats({expenses} : StatsProps) {
+export default function Stats({expenses, general_stats, per_spender_stats, month_stats} : StatsProps) {
     const { auth } = usePage<SharedData>().props;
-
+    
+    useEffect(() => {
+      console.log(expenses);
+      console.log("general_stats : ", general_stats);
+      console.log("per_spender_stats : ", per_spender_stats);
+      console.log("month_stats : ", month_stats);
+    }, [])
+    
     return (
         <>
             <Head title="Stats">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin=''/>
+                <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet"></link>
             </Head>
             <StatsMobileLayout>
-                stats
+                <MonthlySpendingStats stats = {month_stats}/>
+                <GenralSpendingEvolution stats = {general_stats}/>
+                <SpendingTrendPerSpender stats={per_spender_stats} className='mt-8'/>
             </StatsMobileLayout>
         </>
     );

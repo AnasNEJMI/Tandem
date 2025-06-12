@@ -62,7 +62,7 @@ export function AddExpenseDrawer({categories, spenders, open, setOpen} : {catego
     e.preventDefault();
 
     post('/expenses', {
-      only : ['expenses'],
+      only : ['expenses', 'stats'],
       onSuccess : () => {
         setAmountInteger('0');
         setAmountDecimal('0');

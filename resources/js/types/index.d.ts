@@ -97,3 +97,78 @@ export interface CategoryWithPlaces{
     color : string,
     places : Place[],
 }
+
+interface MonthlyStats{
+    categories : MonthlyCategoryStats,
+    spenders : MonthlySpenderStats
+}
+
+interface MonthlyCategoryStats{
+    data : {
+        name : string,
+        amount : string,
+        fill : string
+    }[],
+    config : {[k as string] : string}
+}
+
+interface MonthlySpenderStats{
+    spenders : {
+        name : string,
+        amount : string,
+        fill : string
+    }[],
+    data : {[k as string] : number},
+    config : {[k as string] : string}
+}
+
+interface SpendingEvolutionPerCategoryStats{
+    data : {
+        month : string,
+        amount : number,
+    }[],
+    config : {[k as string] : string}
+}
+
+interface SpendingTrendPerSpenderStats{
+    data : {
+        month : string,
+        [k as string] : number,
+    }[],
+    config : {[k as string] : configData}
+}
+
+interface configData{
+    label : string,
+    color : string
+}
+
+interface MonthStats{
+    month : string,
+    month_index : number,
+    year:number,
+    amount : number,
+    transactions : number,
+    categories : {
+        name : string,
+        amount:number,
+        transactions : number,
+        color: string,
+        spenders : {
+            name : string,
+            amount:number,
+            transactions : number,
+        }[]
+    }[],
+    spenders : {
+        name : string,
+        amount:number,
+        transactions : number,
+        color: string,
+        categories : {
+            name : string,
+            amount:number,
+            transactions : number,
+        }[]
+    }[],
+}

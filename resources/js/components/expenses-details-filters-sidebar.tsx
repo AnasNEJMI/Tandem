@@ -8,6 +8,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Category, Spender } from "@/types";
 import { ToggleGroup } from "./ui/toggle-group";
 import { Toggle } from "./ui/toggle";
+import { Separator } from "./ui/separator";
 
 interface ExpenseDetailsFiltersProps{
   categories : Category[],
@@ -136,15 +137,6 @@ export function ExpensesDetailsFiltersSidebar({
             {
               categories.map((category, index) => (
                 <li key={index} className="flex items-center justify-center gap-2 text-typography">
-                   {/* <Checkbox
-                      id={`filter-category-${category.id}`}
-                      checked={selectedCategories.some((cat) => cat.id === category.id)}
-                      onCheckedChange={() => updateCategories(category.name)}
-                    />
-                    <Label htmlFor={`filter-category-${category.id}`} className="capitalize">
-                      {category.name}
-                    </Label> */}
-
                     <Toggle
                       pressed = {selectedCategories.some((cat) => cat.id === category.id)}
                       onPressedChange={() => updateCategories(category.name)} className="flex-1" key={index}
@@ -170,7 +162,7 @@ export function ExpensesDetailsFiltersSidebar({
                           >
                             {spender.name}
                         </Toggle>
-                        <div className="w-px h-8 bg-accent"></div>
+                        <div key={index} className="w-px h-8 bg-accent"></div>
                       </>
               }else{
                 return <Toggle 
@@ -184,23 +176,6 @@ export function ExpensesDetailsFiltersSidebar({
           }
           </ToggleGroup>
         </div>
-        {/* <ul className="flex flex-col items-start gap-2 mt-2 px-6">
-          {
-            spenders.map((spender, index) => (
-              <li key={index} className="flex items-center justify-center gap-2 text-typography">
-                <Checkbox
-                  id={`filter-spender-${spender.id}`}
-                  checked={selectedSpenders.some((sp) => sp.id === spender.id)}
-                  onCheckedChange={() => updateSpenders(spender.name)}
-                />
-                <Label htmlFor={`filter-spender-${spender.id}`} className="capitalize">
-                  {spender.name}
-                </Label>
-              </li>
-            ))
-          }
-        </ul> */}
-        {/* <div className="h-px w-full bg-card-border mt-4 mb-4 px-6"></div> */}
         <span className="text-sm font-bold px-6">Ordonner par</span>
         <div className="px-6">
           <ToggleGroup type="single" className="flex py-1 px-1 rounded-xl border border-card-border">
@@ -231,24 +206,7 @@ export function ExpensesDetailsFiltersSidebar({
           }
           </ToggleGroup>
         </div>
-        {/* <span className="text-sm font-bold px-6">Ordonner par</span>
-        <ul className="flex flex-col items-start gap-2 mt-2 px-6">
-        {
-          expenseOrderBys.map((ob, index) => (
-            <li key={index} className="flex items-center justify-center gap-2 text-typography">
-            <Checkbox
-            id={ob}
-            checked={orderBy === ob}
-            onCheckedChange={() => updateOrderBy(ob as "Date" | "Montant")}
-            />
-            <Label htmlFor={ob} className="capitalize">
-            {ob}
-            </Label>
-            </li>
-            ))
-            }
-            </ul>
-            <div className="h-px w-full bg-popover-border mt-4 mb-4 px-6"></div> */}
+        <Separator className="bg-card-border"/>
         <span className="text-sm font-bold px-6">Sens</span>
         <div className="px-6">
           <ToggleGroup type="single" className="flex py-1 px-1 rounded-xl border border-card-border">

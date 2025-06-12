@@ -64,7 +64,7 @@ const ExpensesMobileLayout = ({className, children,categories, spenders,showExpe
                 />
               </div>
             </header>
-            <div className='px-6 relative z-10 grow flex flex-col'> 
+            <div style={{transitionDelay:'200ms'}} className='px-6 relative z-10 grow flex flex-col starting:opacity-0 starting:translate-y-8 opacity-100 translate-y-0 transition-all duration-500 ease-out'> 
                 {children}
             </div>
         </main>

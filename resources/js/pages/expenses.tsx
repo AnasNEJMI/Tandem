@@ -5,7 +5,7 @@ import ExpensesMonthYearSelect from '@/components/expenses-month-year-select';
 import ExpensesPresentationElement from '@/components/expenses-presentation-element';
 import ExpensesDistributionPerUserChart from '@/components/expenses-distribution-per-user-chart';
 import ExpensesMobileLayout from '@/layouts/mobile/expenses-mobile-layout';
-import { CategoryWithPlaces, Expense, MonthAndYear, Spender, type SharedData } from '@/types';
+import { CategoryWithPlaces, Expense, MonthAndYear, MonthlyCategoryStats, MonthlyStats, Spender, type SharedData } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { InfoIcon } from 'lucide-react';
 import {useEffect, useState } from 'react';
@@ -15,9 +15,11 @@ interface ExpensesProps{
     categories : CategoryWithPlaces[],
     spenders : Spender[]
     date: MonthAndYear,
+    stats : MonthlyStats,
+    amount : number
 }
 
-export default function Expenses({expenses, categories, spenders, date} : ExpensesProps) {
+export default function Expenses({expenses, categories, spenders, date, stats, amount} : ExpensesProps) {
     const [showExpensesRecapCard, setShowExpensesRecapCard] = useState(true);
     const [showExpensesRepartitionCard, setShowExpensesRepartitionCard] = useState(true);
     const [showExpensesDetailsCard, setShowExpensesDetailsCard] = useState(true);
@@ -27,11 +29,11 @@ export default function Expenses({expenses, categories, spenders, date} : Expens
         'date' : new Date(date.year, date.month -1),
     })
 
-    // useEffect(() => {
+    useEffect(() => {
     //   console.log('expenses : ', expenses);
     //   console.log('categories : ', categories);
-    //   console.log('spenders : ', spenders);
-    // }, [])
+      console.log('stats : ', stats);
+    }, [])
 
     useEffect(() => {
     }, [expenses])
@@ -60,9 +62,6 @@ export default function Expenses({expenses, categories, spenders, date} : Expens
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin=''/>
                 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet"></link>
             </Head>
-            {/* <Home/> */}
-            {/* <Login canResetPassword = {false}/>
-            <Register/> */}
             <ExpensesMobileLayout 
                 showExpensesRecapCard = {showExpensesRecapCard}
                 showExpensesRepartitionCard = {showExpensesRepartitionCard}
@@ -81,20 +80,12 @@ export default function Expenses({expenses, categories, spenders, date} : Expens
                 }
                 {
                     expenses.length > 0 && 
-                    <ExpensesDistributionChart expenses={expenses}/>
+                    <ExpensesDistributionChart totalExpenses={expenses.length} amount={amount} stats={stats.categories}/>
                 }
                 {
                     expenses.length > 0 && 
-                    <ExpensesDistributionPerUserChart expenses = {expenses}/>
+                    <ExpensesDistributionPerUserChart totalExpenses={expenses.length} stats = {stats.spenders}/>
                 }
-                {/* {
-                    showExpensesRecapCard && expenses.length > 0 && 
-                    <ExpensesRecapCard expenses={expenses}/>
-                }
-                {
-                    showExpensesRepartitionCard && expenses.length > 0 &&
-                    <ExpensesRepartitionCard expenses={expenses}/>
-                } */}
                 {
                     showExpensesDetailsCard && expenses.length > 0 &&
                     <ExpensesDetailsCard expenses = {expenses} categories={categories} spenders={spenders}/>

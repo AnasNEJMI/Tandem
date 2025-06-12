@@ -37,7 +37,7 @@ const StatsMobileLayout = ({children} : {children : React.ReactNode}) => {
               </motion.div>
               
             </header>
-            <div className='px-6 relative z-10'> 
+            <div style={{transitionDelay:'200ms'}} className='px-6 relative z-10 starting:opacity-0 starting:translate-y-8 opacity-100 translate-y-0 transition-all duration-500 ease-out'> 
                 {children}
             </div>
         </main>

@@ -12,6 +12,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\SpenderController;
+use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -49,6 +50,11 @@ Route::middleware('auth')->group(function () {
         ->name('expenses');
     Route::post('/expenses', [ExpenseController::class, 'store'])
         ->name('expenses.store');
+        
+    Route::get('/stats',[StatsController::class, 'index'])
+      ->name('stats');
+    Route::post('/stats', [StatsController::class, 'store'])
+        ->name('stats.store');
 
     Route::get('/setup/spenders',[SpenderController::class, 'index'])
         ->name('setup.spenders');
@@ -67,9 +73,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/setup/places',[PlaceController::class, 'store'])
         ->name('setup.places.store');
-    
-    Route::get('/stats',[ExpenseController::class, 'index'])
-        ->name('stats');
 
     Route::get('/goals',[ExpenseController::class, 'index'])
         ->name('goals');
