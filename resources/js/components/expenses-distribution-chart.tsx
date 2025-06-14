@@ -148,11 +148,11 @@ export function ExpensesDistributionChart({totalExpenses, stats, amount} : Expen
             </CardContent>
             {
                 canRenderChart && stats.data.length > 0 &&
-                <div className=" flex-1 pr-6 max-w-[180px] overflow-y-auto h-full flex items-center max-h-[180px]">
-                    <ul className="flex flex-col gap-2  relative z-10">
+                <div className=" flex-1 pr-6 max-w-[180px] overflow-y-auto h-full flex items-start max-h-[180px]">
+                    <ul className="flex flex-col gap-4  relative z-10">
                     {
                         stats.data.map((data, index) => (
-                            <li key={index} style={{transitionDelay : `${index*650/stats.data.length + 400}ms`}} className={`text-xs flex items-center justify-between transition-all duration-400 opacity-100 starting:opacity-0 translate-y-0 starting:translate-y-2`}>
+                            <li key={index} style={{transitionDelay : `${index*650/stats.data.length + 400}ms`}} className={`text-xs flex flex-col gap-1 items-end justify-center transition-all duration-400 opacity-100 starting:opacity-0 translate-y-0 starting:translate-y-2`}>
                                 <div className="flex items-center gap-2">
                                     <div style = {{backgroundColor : data.fill}} className={`w-4 h-4 rounded-sm`}></div>
                                     <span className="text-muted-foreground">{data.name}</span>

@@ -130,12 +130,12 @@ interface SpendingEvolutionPerCategoryStats{
     config : {[k as string] : string}
 }
 
-interface SpendingTrendPerSpenderStats{
+interface ChartStats{
     data : {
         month : string,
         [k as string] : number,
     }[],
-    config : {[k as string] : configData}
+    config : {[k === 'Global' || k as string] : configData}
 }
 
 interface configData{

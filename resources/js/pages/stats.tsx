@@ -1,27 +1,28 @@
 
-import { Expense, MonthStats, SpendingEvolutionPerCategoryStats, SpendingTrendPerSpenderStats, type SharedData } from '@/types';
+import { Category, ChartStats, MonthStats, Spender, type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import StatsMobileLayout from '@/layouts/mobile/stats-mobile-layout';
 import { useEffect } from 'react';
-import GenralSpendingEvolution from '@/components/general-spending-evolution';
-import SpendingTrendPerSpender from '@/components/spending-trend-per-spender';
 import MonthlySpendingStats from '@/components/monthly-spending-stats';
+import SpendingEvolutionStats from '@/components/spending-evolution-stats';
 
 interface StatsProps{
-    expenses : Expense[];
-    general_stats : SpendingEvolutionPerCategoryStats,
-    per_spender_stats : SpendingTrendPerSpenderStats,
+    spenders : Spender[],
+    categories : Category[],
     month_stats : MonthStats[];
+    evolution_stats : ChartStats,
 }
 
-export default function Stats({expenses, general_stats, per_spender_stats, month_stats} : StatsProps) {
+export default function Stats({month_stats, evolution_stats, spenders, categories} : StatsProps) {
     const { auth } = usePage<SharedData>().props;
     
     useEffect(() => {
-      console.log(expenses);
-      console.log("general_stats : ", general_stats);
-      console.log("per_spender_stats : ", per_spender_stats);
+    //   console.log(expenses);
+    //   console.log("general_stats : ", general_stats);
+    //   console.log("per_spender_stats : ", per_spender_stats);
       console.log("month_stats : ", month_stats);
+      console.log("spenders : ", spenders);
+      console.log("categories : ", categories);
     }, [])
     
     return (
@@ -35,8 +36,9 @@ export default function Stats({expenses, general_stats, per_spender_stats, month
             </Head>
             <StatsMobileLayout>
                 <MonthlySpendingStats stats = {month_stats}/>
-                <GenralSpendingEvolution stats = {general_stats}/>
-                <SpendingTrendPerSpender stats={per_spender_stats} className='mt-8'/>
+                <SpendingEvolutionStats spenders={spenders} categories={categories} stats={evolution_stats} className='mt-8'/>
+                {/* <GenralSpendingEvolution stats = {general_stats}/> */}
+                {/* <SpendingTrendPerSpender stats={per_spender_stats} className='mt-8'/> */}
             </StatsMobileLayout>
         </>
     );

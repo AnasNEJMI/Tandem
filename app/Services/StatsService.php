@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Expense;
+use App\Models\Spender;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -122,7 +123,7 @@ class StatsService{
             $year = $month['year'];
 
             $monthStart = Carbon::createFromDate($year, $monthIndex, 1)->startOfMonth();
-            $monthEnd = Carbon::createFromDate($year, $monthIndex, 1)->endOfMonth();
+            $monthEnd = Carbon::createFromDate($year, $monthIndex, day: 1)->endOfMonth();
 
             $monthExpenses = $expenses->filter(function($expense) use ($monthStart, $monthEnd){
                 $expenseDate = Carbon::parse($expense->date);
@@ -179,83 +180,102 @@ class StatsService{
                 'spenders' =>  $spenders,
             ];
         });
+    }
 
-        //group them by month, then map through them and run calculations for each month
-        // return $expenses->groupBy(function($expense){
-        //     $date = Carbon::parse($expense->date)
-        //                     ->locale('fr')
-        //                     ->timezone('Europe/Paris');
+    public static function getSpendingEvolutionStats($user, $numMonths, $spenders, $categories, $analysisStyle){
+        Log::debug('numMonths', [$numMonths]);
+        Log::debug('spenders', [...$spenders]);
+        Log::debug('categories', [$categories]);
+        
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
 
-        //     return $date->format('m-Y');
-        // })->map(function( $monthExpenses, $date){
-        //     [$monthIndex, $year] = explode('-', $date);
-        //     $month = Carbon::createFromFormat('m-Y', $date)->locale('fr');
-        //     $monthString = ucfirst($month->isoFormat('MMMM YYYY'));
-        //     $amount = $monthExpenses->sum('amount');
-        //     $transactions = $monthExpenses->count();
+        $months = [];
 
+        for($i = $numMonths - 1 ; $i > 0; $i--){
+            if($month - $i < 1){
+                $months[] = ['month' => 12 + $month - $i, 'year' => $year - 1];
+            }else{
+                $months[] = ['month' =>$month - $i, 'year' => $year];
+            }
+        }
 
-        //     $categories = $monthExpenses->groupBy(function($monthExpense){
-        //         return $monthExpense->category->name;
-        //     })->map(function($catExpenses, $catName){
-        //         $name = $catName;
-        //         $amount = $catExpenses->sum('amount');
-        //         $transactions = $catExpenses->count();
-        //         $color = $catExpenses->first()->category->color;
-        //         return [
-        //             'name' => $name,
-        //             'amount' => $amount,
-        //             'transactions' => $transactions,
-        //             'color' => $color,
-        //             'spenders' => $catExpenses->groupBy('spender_id')->map(function($catSpExpenses){
-        //                 $name = $catSpExpenses->first()->spender->name;
-        //                 $amount = $catSpExpenses->sum('amount');
-        //                 $transactions = $catSpExpenses->count();
-        //                 return [
-        //                     'name' => $name,
-        //                     'amount' => $amount,
-        //                     'transactions' => $transactions,
-        //                 ];
-        //             })->values()->all()
-        //         ];
-        //     })->values()->all();
+        $months[] = ['month' => $month, 'year' => $year];
+        $stats = [];
+        
+        if($analysisStyle === 'comparison'){
+            $data =  collect($months)->map(function($month) use ($user, $spenders, $categories){
+                $monthStart = Carbon::createFromDate($month['year'], $month['month'], 1)->startOfMonth();
+                $monthEnd = Carbon::createFromDate($month['year'], $month['month'], 1)->endOfMonth();
+                
+                $monthData = [];
+                $monthData['month'] =  ucfirst($monthStart->locale('fr')->isoFormat('MMMM'));
+                
+                collect($spenders)->each(function($spender) use ($user, $categories, &$monthData, $monthStart, $monthEnd){
+                    $catIds = collect($categories)->map(function($catId){
+                        return $catId['id'];}
+                    );
+                    
+                    
+                    $amount = Expense::where('user_id', $user->id)
+                    ->where('spender_id', $spender['id'])
+                    ->whereIn('category_id', $catIds)
+                    ->whereBetween('date',[$monthStart, $monthEnd])
+                    ->get()
+                    ->sum('amount');
+                    Log::debug( 'amount', [$amount]);
+                    
+                    $monthData[$spender['name']] = $amount;
+                });
+                
+                return $monthData;
+            })->values()->all();
+            
+            $config = [];
+            
+            collect($spenders)->each(function($spender)use(&$config){
+                $config[$spender['name']] = [
+                    'label' => $spender['name'],
+                    'color' => $spender['color'],
+                ];
+            });
             
             
-            
-        //     $spenders = $monthExpenses->groupBy(function($monthExpense){
-        //         return $monthExpense->spender->name;
-        //     })->map(function($spExpenses, $spName){
-        //         $name = $spName;
-        //         $amount = $spExpenses->sum('amount');
-        //         $transactions = $spExpenses->count();
-        //         $color = $spExpenses->first()->spender->color;
-        //         return [
-        //             'name' => $name,
-        //             'amount' => $amount,
-        //             'transactions' => $transactions,
-        //             'color' => $color,
-        //             'categories' => $spExpenses->groupBy('category_id')->map(function($spCatExpenses){
-        //                 $name = $spCatExpenses->first()->category->name;
-        //                 $amount = $spCatExpenses->sum('amount');
-        //                 $transactions = $spCatExpenses->count();
-        //                 return [
-        //                     'name' => $name,
-        //                     'amount' => $amount,
-        //                     'transactions' => $transactions,
-        //                 ];
-        //             })->values()->all()
-        //         ];
-        //     })->values()->all();
+            $stats['data'] = $data;
+            $stats['config'] = $config;
+        }else if($analysisStyle === 'global'){
+            $data = collect($months)->map(function($month) use($user, $spenders, $categories){
+                $monthStart = Carbon::createFromDate($month['year'], $month['month'], 1)->startOfMonth();
+                $monthEnd = Carbon::createFromDate($month['year'], $month['month'], 1)->endOfMonth();
+                
+                $monthData = [];
+                $monthData['month'] =  ucfirst($monthStart->locale('fr')->isoFormat('MMMM'));
+                
+                $categoryIds = collect($categories)->map(function($categoryId){
+                        return $categoryId['id'];}
+                );
+                $spenderIds = collect($spenders)->map(function($spenderId){
+                        return $spenderId['id'];}
+                );
 
-        //     return [
-        //         'month' => $monthString,
-        //         'month_index' => (int) $monthIndex,
-        //         'year' =>(int) $year,
-        //         'amount' => $amount,
-        //         'transactions' =>(int) $transactions,
-        //         'categories' => $categories,
-        //         'spenders' => $spenders,
-        //     ];
-        // })->values()->all();
+                $monthData['Global'] = Expense::where('user_id', $user->id)
+                                                ->whereIn('spender_id', $spenderIds)
+                                                ->whereIn('category_id', $categoryIds)
+                                                ->whereBetween('date',[$monthStart, $monthEnd])
+                                                ->get()
+                                                ->sum('amount');
+                
+                return $monthData;
+            })->values()->all();
+
+            $stats['data'] = $data;
+            $stats['config']['Global'] = [
+                'label' => 'Global',
+                'color' => 'hsl(199, 89%, 48%)'
+            ];
+        }
+        
+        Log::debug( 'stats', $stats);
+        return $stats;
     }
 }

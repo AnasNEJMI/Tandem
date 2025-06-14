@@ -203,7 +203,8 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
     useEffect(() => {
         if(hasMounted.current){
             setTimeout(() => {
-                post('/stats', {
+                post('/stats',{
+                    preserveState: true,
                     preserveScroll : true,
                     only : ['month_stats'],
                 })
@@ -228,8 +229,8 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
                     {
                         stats.map((monthStats, index) => (
                             <Toggle pressed = {selectedMonthStats.month === monthStats.month} onPressedChange={() => {setSelectedMonthStats(monthStats); updatedSelectedTab(0);}} variant={'default'} key={index} className='w-full flex-1 h-full data-[state=on]:bg-white data-[state=on]:shadow-sm rounded-xl p-2 flex items-center justify-center flex-col'>
-                                <span className='text-muted-foreground font-medium text-sm'>{monthStats.month.split(' ')[0]}</span>
-                                <span className='text-typography font-black text-lg'>{Number(monthStats.amount).toFixed(2).split('.').join(',')} €</span>
+                                <span className={`${selectedMonthStats.month === monthStats.month? 'text-typography' : 'text-muted-foreground'} font-light text-sm`}>{monthStats.month.split(' ')[0]}</span>
+                                <span className={`${selectedMonthStats.month === monthStats.month? 'text-typography' : 'text-muted-foreground'} font-black`}>{Number(monthStats.amount).toFixed(2)} €</span>
                             </Toggle>
                         ))
                     }
@@ -249,17 +250,17 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
                 <div className='w-full flex gap-2'>
                     <div className='flex flex-col items-center justify-center flex-1 w-full'>
                         <span className='text-[0.7rem] text-muted-foreground font-light'>Transactions</span>
-                        <span className='text-lg text-typography font-black'>{selectedMonthStats.transactions}</span>
+                        <span className='text-typography font-black'>{selectedMonthStats.transactions}</span>
                         {/* <span className='flex items-center text-sm font-bold gap-2'><TrendingUp className='w-4 h-4'/>5,2%</span> */}
                     </div>
                     <div className='flex flex-col items-center justify-center flex-1 w-full'>
                         <span className='text-[0.7rem] text-muted-foreground font-light'>Personnes</span>
-                        <span className='text-lg text-typography font-black'>{selectedMonthStats.spenders.length}</span>
+                        <span className='text-typography font-black'>{selectedMonthStats.spenders.length}</span>
                         {/* <span className='flex items-center text-sm font-bold gap-2'><UserIcon className='w-4 h-4'/></span> */}
                     </div>
                     <div className='flex flex-col items-center justify-center flex-1 w-full'>
                         <span className='text-[0.7rem] text-muted-foreground font-light'>Total</span>
-                        <span className='text-lg text-typography font-black rounded-lg'>{Number(selectedMonthStats.amount).toFixed(2).split('.').join(',')} €</span>
+                        <span className='text-typography font-black rounded-lg'>{Number(selectedMonthStats.amount).toFixed(2).split('.').join(',')} €</span>
                         {/* <span className='flex items-center text-sm font-bold gap-2'><TrendingDown className='w-4 h-4'/>10,2%</span> */}
                     </div>
                 </div>

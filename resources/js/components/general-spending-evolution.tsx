@@ -5,7 +5,6 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { TrendingDown, TrendingUp } from 'lucide-react'
 import { SpendingEvolutionPerCategoryStats } from '@/types'
 import { useForm } from '@inertiajs/react'
-import ExpensesMonthYearSelect from './expenses-month-year-select'
 
 interface SpendingEvolutionPerCategoryProps{
     stats : SpendingEvolutionPerCategoryStats,

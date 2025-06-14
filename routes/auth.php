@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\GoalController;
+use App\Http\Controllers\GoalsController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\SpenderController;
 use App\Http\Controllers\StatsController;
@@ -53,19 +55,26 @@ Route::middleware('auth')->group(function () {
         
     Route::get('/stats',[StatsController::class, 'index'])
       ->name('stats');
-    Route::post('/stats', [StatsController::class, 'store'])
-        ->name('stats.store');
+    Route::post('/stats',[StatsController::class, 'getMonthStats'])
+      ->name('stats.getMonthStats');
+      Route::put('/stats',[StatsController::class, 'getSpendingEvolutionStats'])
+      ->name('stats.getSpendingEvolutionStats');
+    
+    Route::get('/goals',[GoalsController::class, 'index'])
+        ->name('goals');
+    Route::post('/goals', [GoalsController::class, 'store'])
+        ->name('goals.store');
 
-    Route::get('/setup/spenders',[SpenderController::class, 'index'])
+      Route::get('/setup/spenders',[SpenderController::class, 'index'])
         ->name('setup.spenders');
     
     Route::post('/setup/spenders',[SpenderController::class, 'store'])
         ->name('setup.spenders.store');
-
-    Route::get('/setup/categories',[CategoryController::class, 'index'])
-        ->name('setup.categories');
+        
+        Route::get('/setup/categories',[CategoryController::class, 'index'])
     
-    Route::post('/setup/categories',[CategoryController::class, 'store'])
+        ->name('setup.categories');
+        Route::post('/setup/categories',[CategoryController::class, 'store'])
         ->name('setup.categories.store');
 
     Route::get('/setup/places',[PlaceController::class, 'index'])
@@ -74,10 +83,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/setup/places',[PlaceController::class, 'store'])
         ->name('setup.places.store');
 
-    Route::get('/goals',[ExpenseController::class, 'index'])
-        ->name('goals');
-    Route::post('/goals', [ExpenseController::class, 'store'])
-        ->name('goals.store');
 
     Route::get('/settings',[ExpenseController::class, 'index'])
         ->name('settings');

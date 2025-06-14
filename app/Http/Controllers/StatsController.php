@@ -15,36 +15,28 @@ use App\Services\StatsService;
 class StatsController extends Controller
 {
     public function index(){
+
         $user = auth()->user();
         $user_id = auth()->id();
 
         $month = Carbon::now()->month;
         $year = Carbon::now()->year;
 
-        $expenses = Expense::with(['spender', 'category', 'places'])
-                            ->where('user_id', $user_id)
-                            ->get();
-        
-        $categories = Category::where('user_id', $user_id)->pluck('id')->toArray();
-        $spenderIds = Spender::where('user_id', $user_id)->pluck('id')->toArray();
-
-        $expensesByMonth = $expenses->groupBy(function($expense){ return Carbon::parse($expense->date)->format('Y-m');});
-        $spendingTrendPerSpender = StatsService::getSpendingTrendPerSpender($user, $spenderIds);
-        $stats = StatsService::getSpendingEvolutionByCategory($user, $categories);
+        $categories = Category::where('user_id', $user_id)->get();
+        $spenders = Spender::where('user_id', $user_id)->get();
         
         $monthStats = StatsService::getMonthlySpendingStats($user, [['index'=>$month-2, 'year'=>$year], ['index'=>$month-1, 'year'=>$year],['index'=>$month, 'year'=>$year]]);
-        
-        Log::debug('monthstats', ['stats', $monthStats]);
+        $evolutionStats = StatsService::getSpendingEvolutionStats($user, 3, $spenders, $categories, 'comparison');
         return Inertia::render('stats', 
             [
-                'expenses' => $expensesByMonth,
-                'general_stats' => $stats,
-                'per_spender_stats' => $spendingTrendPerSpender,
-                'month_stats' => $monthStats
+                'month_stats' => $monthStats,
+                'evolution_stats' => $evolutionStats,
+                'spenders' => $spenders,
+                'categories' => $categories,
             ]);
     }
 
-    public function store(Request $request){
+    public function getMonthStats(Request $request){
         $validated = $request->validate([
             'months' => 'required|array',
             'months.*.index' => 'required|integer',
@@ -62,6 +54,30 @@ class StatsController extends Controller
         return Inertia::render('stats', 
             [
                 'month_stats' => $monthStats
+            ]);
+    }
+
+    public function getSpendingEvolutionStats(Request $request){
+        $validated = $request->validate([
+            'num_months' => 'required|integer',
+            'spenders' => 'required|array',
+            'spenders.*.id' => 'exists:spenders,id',
+            'spenders.*.name' => 'string|max:50',
+            'spenders.*.color' => 'string|max:100',
+            'categories' => 'required|array',
+            'categories.*.id' => 'exists:categories,id',
+            'categories.*.name' => 'required|string|max:50',
+            'categories.*.color' => 'required|string|max:100',
+            'analysis_style' => 'required|string'
+        ]);
+
+        $user = auth()->user();
+
+        $spendingEvolutionStats = StatsService::getSpendingEvolutionStats($user, $validated['num_months'],$validated['spenders'],$validated['categories'], $validated['analysis_style']);
+
+        return Inertia::render('stats', 
+            [
+                'evolution_stats' => $spendingEvolutionStats,
             ]);
     }
 }
