@@ -38,7 +38,7 @@ const SettingsMobileLayout = ({children}
                 <h3  className='text-xl font-medium text-typography'>{title}</h3>
               </motion.div>
             </header>
-            <div className='px-6 relative z-10'> 
+            <div className='px-6 relative z-10 '> 
                 {children}
             </div>
         </main>

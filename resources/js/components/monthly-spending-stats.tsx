@@ -84,11 +84,6 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
 
     const hasMounted = useRef(false);
 
-    useEffect(() => {
-      console.log('stats are : ', stats)
-    }, [stats])
-    
-
     const categoryData = useMemo(() => {
         const data = selectedMonthStats.categories.map((category, index) => {
             return {
@@ -119,11 +114,6 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
             }
         }
 
-        console.log('spenderData : ', {
-            data : [data],
-            config : config satisfies ChartConfig
-        })
-
         return {
             data : [data],
             config : config satisfies ChartConfig
@@ -145,7 +135,6 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
 
     useEffect(() => {
         if(!statsApi) return;
-        console.log('api')
         statsApi.on("select", () => {
             setSelectedTab(statsApi.selectedScrollSnap())
         })
@@ -153,7 +142,6 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
     
     useEffect(() => {
         if(!monthApi) return;
-        console.log('month api');
         monthApi.scrollTo(numMonthTabs - 1, true);
     }, [monthApi])
     

@@ -166,6 +166,7 @@ const SpendingEvolutionStats = ({className, categories, spenders, stats} : Spend
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={barData}>
                                         <Bar
+                                            radius={5}
                                             dataKey="goal"
                                             style={
                                             {

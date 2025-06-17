@@ -172,3 +172,18 @@ interface MonthStats{
         }[]
     }[],
 }
+
+interface GoalStats extends Goal{
+    stats : {startDate : string, endDate : string, amount : number}[],
+}
+
+interface Goal{
+    id : number,
+    period : 'w'|'m'|'y',
+    goal : number,
+    category_id : number,
+    spender_id : number,
+    created_at : string
+    category : {id : number, name: string, color : string},
+    spender : {id : number, name: string, color : string},
+}

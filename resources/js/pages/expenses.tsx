@@ -28,27 +28,6 @@ export default function Expenses({expenses, categories, spenders, date, stats, a
     const {data, setData, post, processing, errors} = useForm({
         'date' : new Date(date.year, date.month -1),
     })
-
-    useEffect(() => {
-    //   console.log('expenses : ', expenses);
-    //   console.log('categories : ', categories);
-      console.log('stats : ', stats);
-    }, [])
-
-    useEffect(() => {
-    }, [expenses])
-
-    // useEffect(() => {
-    //     const month = data.date.getMonth() +1;
-    //     const year = data.date.getFullYear();
-
-    //     post('/expenses', {
-    //         preserveScroll : true,
-    //         onSuccess : () => {
-                 
-    //         }
-    //     })
-    // }, [data])
     
     const onDateChange = (date : Date) => {
         setData('date', date);

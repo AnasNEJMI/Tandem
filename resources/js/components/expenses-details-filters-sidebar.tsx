@@ -83,11 +83,6 @@ export function ExpensesDetailsFiltersSidebar({
     setOrderBy(selectedOrderBy);
   }
 
-  React.useEffect(() => {
-    console.log("selected Spenders ", selectedSpenders);
-  }, [selectedSpenders])
-  
-
   const updateOrderByDirection = (selectedOrderByDirection : "Croissant"|"Décroissant") =>{
     if(orderByDirection === selectedOrderByDirection) return;
     setOrderByDirection(selectedOrderByDirection);

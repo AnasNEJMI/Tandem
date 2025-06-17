@@ -3,21 +3,9 @@
 namespace App\Services;
 
 use App\Models\Expense;
-use App\Models\Spender;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\ErrorHandler\Debug;
-
-// const chartData = [
-//   { month: "January", desktop: 186, mobile: 80 },
-//   { month: "February", desktop: 305, mobile: 200 },
-//   { month: "March", desktop: 237, mobile: 120 },
-//   { month: "April", desktop: 73, mobile: 190 },
-//   { month: "May", desktop: 209, mobile: 130 },
-//   { month: "June", desktop: 214, mobile: 140 },
-// ]
 
 class StatsService{
     public static function getSpendingEvolutionByCategory(User $user,array $categoryIds){

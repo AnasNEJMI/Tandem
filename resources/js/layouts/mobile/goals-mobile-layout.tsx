@@ -1,11 +1,20 @@
 import React, { useRef } from 'react'
 import MobileLayout from './mobile-layout'
 import { motion, useScroll, useTransform } from 'motion/react';
-import { ChartLineIcon, FlagIcon } from 'lucide-react';
+import {FlagIcon } from 'lucide-react';
+import AddGoalSidebar from '@/components/add-goal-sidebar';
+import { Category, Spender } from '@/types';
 
 const title = "Objectifs";
 
-const GoalsMobileLayout = ({children} : {children : React.ReactNode}) => {
+interface GoalsMobileLayoutProps {
+    children : React.ReactNode,
+    className? : string,
+    categories : Category[],
+    spenders : Spender[]
+}
+
+const GoalsMobileLayout = ({children, className, categories, spenders} : GoalsMobileLayoutProps) => {
     const targetRef = useRef<HTMLDivElement>(null);
     const {scrollYProgress} = useScroll({
         target : targetRef,
@@ -37,8 +46,11 @@ const GoalsMobileLayout = ({children} : {children : React.ReactNode}) => {
               </motion.div>
               
             </header>
-            <div className='px-6 relative z-10'> 
+            <div className='px-6 relative z-10 starting:opacity-0 starting:translate-y-8 opacity-100 translate-y-0 transition-all duration-500 ease-out'> 
                 {children}
+            </div>
+            <div className='fixed bottom-28 right-4 z-50'>
+                <AddGoalSidebar categories={categories} spenders={spenders}/>
             </div>
         </main>
     </MobileLayout>
