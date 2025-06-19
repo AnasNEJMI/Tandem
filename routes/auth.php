@@ -13,6 +13,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\GoalsController;
 use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SpenderController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +66,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/goals', [GoalsController::class, 'store'])
         ->name('goals.store');
 
+    Route::get('/settings',[SettingsController::class, 'index'])
+        ->name('settings');
+    Route::delete('/settings/category', [SettingsController::class, 'deleteCategory'])
+        ->name('settings.deleteCategory');
+    Route::put('/settings/category', [SettingsController::class, 'updateCategory'])
+    ->name('settings.updateCategory');
+    Route::post('/settings/category', [SettingsController::class, 'createCategory'])
+    ->name('settings.createCategory');
+
       Route::get('/setup/spenders',[SpenderController::class, 'index'])
         ->name('setup.spenders');
     
@@ -83,11 +93,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/setup/places',[PlaceController::class, 'store'])
         ->name('setup.places.store');
 
-
-    Route::get('/settings',[ExpenseController::class, 'index'])
-        ->name('settings');
-    Route::post('/settings', [ExpenseController::class, 'store'])
-        ->name('settings.store');
 
 
     // Route::get('verify-email', EmailVerificationPromptController::class)

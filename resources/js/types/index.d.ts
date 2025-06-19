@@ -89,6 +89,8 @@ export interface ExpenseForm{
 export interface Category{
     id : number,
     name : string,
+    color : string,
+    transactions? : number,
 }
 
 export interface CategoryWithPlaces{

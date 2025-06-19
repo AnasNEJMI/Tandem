@@ -48,10 +48,6 @@ class StatsService{
                             ->whereIn('spender_id', $spenderIds)
                             ->orderBy('date', 'asc')
                             ->get();
-        // $expensesByMonth = $expenses->groupBy(function($expense){
-        //     $date = Carbon::parse($expense->date)->locale('fr')->timezone('Europe/Paris');
-        //     return ucfirst($date->isoFormat('MMMM YYYY'));
-        // });
 
         $data = [];
         $config = [];

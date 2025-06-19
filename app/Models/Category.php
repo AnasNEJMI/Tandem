@@ -18,6 +18,11 @@ class Category extends Model
     }
 
     public function places() {
-    return $this->hasMany(Place::class);
-}
+        return $this->hasMany(Place::class);
+    }
+    
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
 }

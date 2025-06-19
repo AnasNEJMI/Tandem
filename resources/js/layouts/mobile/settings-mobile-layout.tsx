@@ -1,12 +1,26 @@
 import React, { useRef } from 'react';
-import {motion, useScroll, useTransform} from 'motion/react';
+import {AnimatePresence, motion, useScroll, useTransform} from 'motion/react';
 import MobileLayout from './mobile-layout';
-import { SettingsIcon } from 'lucide-react';
+import { ArrowLeft, SettingsIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import SettingsProfile from '@/components/settings-profile';
+import SettingsCategories from '@/components/settings-categories';
+import SettingsSpenders from '@/components/settings-spenders';
+import SettingsVisualisation from '@/components/settings-visualisation';
+import { Category, Spender } from '@/types';
 
 const title = "Paramètres";
 
-const SettingsMobileLayout = ({children}
-                            :{children : React.ReactNode}) => {
+interface SettingsMobileLayoutProps{
+    children : React.ReactNode,
+    openTab : 'profile'|'categories'|'spenders'|'visualisation'|'none',
+    setOpenTab : React.Dispatch<React.SetStateAction<"profile" | "categories" | "spenders" | "visualisation" | "none">>
+    categories : Category[],
+    spenders : Spender[]
+}
+
+const SettingsMobileLayout = ({children, openTab, setOpenTab, categories, spenders}
+                            :SettingsMobileLayoutProps) => {
     const targetRef = useRef<HTMLDivElement>(null);
     const {scrollYProgress} = useScroll({
         target : targetRef,
@@ -38,9 +52,38 @@ const SettingsMobileLayout = ({children}
                 <h3  className='text-xl font-medium text-typography'>{title}</h3>
               </motion.div>
             </header>
-            <div className='px-6 relative z-10 '> 
+            <div className='px-6 relative z-10 starting:opacity-0 starting:translate-y-8 opacity-100 translate-y-0 transition-all duration-500 ease-out '> 
                 {children}
             </div>
+            <AnimatePresence mode='wait'>
+                {
+                    openTab !== 'none' &&
+                    <motion.div
+                        className='fixed top-0 left-0 h-screen w-full z-50 bg-background overflow-y-auto px-6'
+                        initial = {{opacity:1, y:100}}
+                        animate = {{opacity:1, y:0}}
+                        exit={{opacity:0, y:100}}
+                        transition={{duration:0.15, ease:"easeOut"}}
+                    >
+                    {
+                        openTab === 'profile' &&
+                        <SettingsProfile setOpenTab={setOpenTab}/>
+                    }
+                    {
+                        openTab === 'categories' &&
+                        <SettingsCategories categories = {categories} setOpenTab={setOpenTab}/>
+                    }
+                    {
+                        openTab === 'spenders' &&
+                        <SettingsSpenders spenders = {spenders} setOpenTab={setOpenTab}/>
+                    }
+                    {
+                        openTab === 'visualisation' &&
+                        <SettingsVisualisation setOpenTab={setOpenTab}/>
+                    }
+                    </motion.div>
+                }
+            </AnimatePresence>
         </main>
     </MobileLayout>
   )

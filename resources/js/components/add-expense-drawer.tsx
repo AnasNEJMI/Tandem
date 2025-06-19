@@ -215,65 +215,7 @@ export function AddExpenseDrawer({categories, spenders, open, setOpen} : {catego
                   </ul>
                 </motion.div>
               }
-
-              {/* {
-                selectedCategory === "Loisirs" &&
-                <motion.div
-                  className="mt-2"
-                  key="loisirs-location-key"
-                  initial = {{opacity:0, y:20}}
-                  animate = {{opacity:1, y:0, transition :{delay : 0.15}}}
-                  exit={{opacity:0, y:20}}
-                  transition={{duration:0.15, ease:"easeOut"}}
-                >
-                  <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
-                  <span className="text-start text-sm">Activité</span>
-                  <ul className="relative flex items-center justify-start gap-2 flex-wrap mt-2">
-                    {
-                      loisirsActivities.map((loisirActivity, index) => {
-
-                        return (
-                        <li key={loisirActivity} className={`cursor-pointer rounded-md ${processing? "pointer-events-none" : ""} ${selectedPlaces.includes(loisirActivity)? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-card-border text-typography"} border text-xs py-2 px-2 flex items-center justify-center`} onClick={() => updateSelectedLocations(loisirActivity)}>
-                          {loisirActivity}
-                        </li>
-                        )
-                      })
-                    }
-                  </ul>
-                </motion.div>
-              }
-
-              {
-                selectedCategory === "Restaurant" &&
-                <motion.div
-                  className="mt-2"
-                  key="restaurant-location-key"
-                  initial = {{opacity:0, y:20}}
-                  animate = {{opacity:1, y:0, transition :{delay : 0.15}}}
-                  exit={{opacity:0, y:20}}
-                  transition={{duration:0.15, ease:"easeOut"}}
-                >
-                  <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
-                  <span className="text-start text-sm">Lieu</span>
-                  <Input disabled = {processing} className="text-xs" onChange={(e) => setSelectedPlaces([e.target.value])}/>
-                </motion.div>
-              }
-
-              {
-                selectedCategory === "Voyage" &&
-                <motion.div
-                  className="mt-4"
-                  key="trip-location-key"
-                  initial = {{opacity:0, y:20}}
-                  animate = {{opacity:1, y:0, transition :{delay : 0.15}}}
-                  exit={{opacity:0, y:20}}
-                  transition={{duration:0.15, ease:"easeOut"}}
-                >
-                  <div className="h-px w-full bg-popover-border mt-4 mb-4"></div>
-                  <span className="text-start text-sm">Destination</span>
-                  <Input disabled = {processing} className="text-xs mt-2" onChange={(e) => setSelectedPlaces([e.target.value])}/>
-                </motion.div>
-              } */}
+              
             </AnimatePresence>
           </div>
 

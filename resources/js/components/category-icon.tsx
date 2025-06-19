@@ -1,6 +1,6 @@
 import { categories } from '@/lib/data';
 import { cn } from '@/lib/utils';
-import { ActivityIcon, AirplayIcon, BabyIcon, BackpackIcon, BanknoteIcon, BusFrontIcon, CarIcon, CatIcon, CircleHelpIcon, CookingPotIcon, FootprintsIcon, FuelIcon, GiftIcon, GraduationCapIcon, HandCoins, HandHeartIcon, HouseIcon, PlaneIcon, Plug2Icon, ShirtIcon, ShoppingCartIcon, SmartphoneIcon, UtensilsIcon, WifiIcon, WindIcon } from 'lucide-react';
+import { ActivityIcon, AirplayIcon, BabyIcon, BackpackIcon, BanknoteIcon, BuildingIcon, BusFrontIcon, CarIcon, CatIcon, CircleHelpIcon, CookingPotIcon, FootprintsIcon, FuelIcon, GiftIcon, GraduationCapIcon, HandCoins, HandHeartIcon, Home, HomeIcon, HouseIcon, PlaneIcon, Plug2Icon, ShirtIcon, ShoppingCartIcon, SmartphoneIcon, UtensilsIcon, WifiIcon, WindIcon } from 'lucide-react';
 import React from 'react'
 
 const CategoryIcon = ({category, className} : {category : string, className? : string}) => {
@@ -52,7 +52,7 @@ const CategoryIcon = ({category, className} : {category : string, className? : s
       case categories[22] :
           return <CatIcon className = {cn('', className)}/>;
       case categories[23] :
-          return <HouseIcon className = {cn('', className)}/>;
+          return <BuildingIcon className = {cn('', className)}/>;
       case categories[24] :
           return <CircleHelpIcon className = {cn('', className)}/>;
       default : 
