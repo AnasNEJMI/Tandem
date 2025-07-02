@@ -54,8 +54,8 @@ const SpendingEvolutionStats = ({className, categories, spenders, stats,  prefer
     const [selectedSpenders, setSelectedSpenders] = useState(spenders);
     const [selectedCategories, setSelectedCategories] = useState(categories);
     const [selectedNumMonths, setSelectedNumMonths] = useState(3);
-    const [selectedAnalysisStyle, setSelectedAnalysisStyle] = useState<'comparison'|'global'>('comparison')
-    const [selectedVisualisationStyle, setSelectedVisualisationStyle] = useState<'bar'|'line'>('line')
+    const [selectedAnalysisStyle, setSelectedAnalysisStyle] = useState<'comparison'|'global'>('comparison');
+    const [selectedVisualisationStyle, setSelectedVisualisationStyle] = useState<'bar'|'line'>(preferences.charts_style);
 
     
   return (
