@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { GoalStats } from '@/types';
+import { GoalStats, Preferences } from '@/types';
 import React, { useMemo, useState } from 'react'
 import { Card, CardContent, CardTitle } from './ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
@@ -7,16 +7,20 @@ import {XCircleIcon } from 'lucide-react';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { stat } from 'fs';
+import { formatAmount, formatDate } from '@/lib/data';
+import useCurrencySymbol from '@/hooks/use-currency-symbol';
 
 interface GoalCards{
     className? : string,
     period : 'w'|'m'|'y',
     goalStats : GoalStats[],
+    preferences : Preferences
 }
 
 
-const GoalCards = ({className, period, goalStats} : GoalCards) => {
-    const [goalIndex, setGoalIndex] = useState(0)
+const GoalCards = ({className, period, goalStats, preferences} : GoalCards) => {
+    const [goalIndex, setGoalIndex] = useState(0);
+    const currencySymbol = useCurrencySymbol(preferences.currency);
     const cardHeader = (period : 'w'|'m'|'y') => {
         switch(period){
             case 'w' : return 'Objectifs Hibdomadaires';
@@ -86,23 +90,33 @@ const GoalCards = ({className, period, goalStats} : GoalCards) => {
 
         const pct = Number(sortedStats[sortedStats.length - 1].amount) > Number(goal)? 
             Number((goal/sortedStats[sortedStats.length - 1].amount)*100).toFixed(0) : 
-        Number((sortedStats[sortedStats.length - 1].amount/goal)*100).toFixed(0)
-        const current = {
-            exceeds : Number(sortedStats[sortedStats.length - 1].amount) > Number(goal),
-            amount : sortedStats[sortedStats.length - 1].amount,
-            goal : goal,
-            pct : pct,
-        }
+            Number((sortedStats[sortedStats.length - 1].amount/goal)*100).toFixed(0)
+            const current = {
+                exceeds : Number(sortedStats[sortedStats.length - 1].amount) > Number(goal),
+                amount : sortedStats[sortedStats.length - 1].amount,
+                goal : goal,
+                pct : pct,
+            }
 
-        return {
-            data : data,
-            config : config satisfies ChartConfig,
-            current : current,
-        }
-    }, [goalStats, goalIndex])
+            return {
+                data : data,
+                config : config satisfies ChartConfig,
+                current : current,
+            }
+        }, [goalStats, goalIndex])
 
     const formatCreatedAtDate = (date : string) => {
-        return new Intl.DateTimeFormat('fr-FR').format(new Date(date));
+        const dateString =  new Intl.DateTimeFormat('fr-FR').format(new Date(date));
+        const [day, month, year] = dateString.split('/');
+        switch(preferences.date_format){
+            case 'mdy' : 
+                return `${month}/${day}/${year}`
+            case 'dmy' : 
+                return `${day}/${month}/${year}`
+                default : 
+                console.error('unknown date format ', preferences.date_format);
+                return `${day}/${month}/${year}`
+        }
     }
   return (
     <Card className={cn('mt-2', className)}>
@@ -114,7 +128,7 @@ const GoalCards = ({className, period, goalStats} : GoalCards) => {
                 <DropdownMenuTrigger className=' bg-white shadow-md rounded-md w-full flex flex-col'>
                     <div style={{backgroundColor : goalStats[goalIndex].spender.color}} className='w-full py-1 text-xs rounded-t-md flex justify-between px-2 text-white'><span className='flex w-min font-bold'>{goalStats[goalIndex].spender.name}</span> <span className='font-light'>Créé le : <span>{formatCreatedAtDate(goalStats[goalIndex].created_at)}</span></span></div>
                     <div className='flex w-full py-1 px-2'>
-                        <span className='text-sm flex-1 font-bold text-typography'>{Number(goalStats[goalIndex].goal).toFixed(2)} €</span>
+                        <span className='text-sm flex-1 font-bold text-typography'>{formatAmount(Number(goalStats[goalIndex].goal), preferences.number_format)} {currencySymbol}</span>
                         <div className='h-4 w-px bg-accent'></div>
                         <span className='text-sm flex-1 font-bold text-typography'>{goalStats[goalIndex].category.name}</span>
                     </div>
@@ -126,7 +140,7 @@ const GoalCards = ({className, period, goalStats} : GoalCards) => {
                     {
                         goalStats.map((stat, index) => (
                             <DropdownMenuRadioItem color={stat.spender.color} className='hover:bg-background w-full' key={`${stat.period}-${index}`} value={index.toString()}>
-                                <p className='flex flex-col flex-1 text-xs text-muted-foreground'>Objectif<span className='text-sm font-bold text-typography'>{Number(goalStats[index].goal).toFixed(2)} €</span></p>
+                                <p className='flex flex-col flex-1 text-xs text-muted-foreground'>Objectif<span className='text-sm font-bold text-typography'>{formatAmount(Number(goalStats[index].goal), preferences.number_format)} {currencySymbol}</span></p>
                                 <div className='h-12 w-px bg-accent'></div>
                                 <p className='flex flex-col flex-1 text-xs text-muted-foreground'>Catégorie<span className='text-sm font-bold text-typography'>{goalStats[index].category.name}</span></p>
                                 <div className='h-12 w-px bg-accent'></div>
@@ -198,14 +212,14 @@ const GoalCards = ({className, period, goalStats} : GoalCards) => {
                     chartStats.current.exceeds &&
                     <div className='bg-red-400/30 text-red-500 flex gap-4 p-2 rounded-md mt-4'>
                         <XCircleIcon className=''/>
-                        <span className='font-bold text-xs text-pretty'>Vous avez dépassé votre objectif de {Number(chartStats.current.amount - chartStats.current.goal).toFixed(2)} €, soit {Number((chartStats.current.amount/chartStats.current.goal)*100).toFixed(2)} % du budget fixé.</span>
+                        <span className='font-bold text-xs text-pretty'>Vous avez dépassé votre objectif de {formatAmount(Number(chartStats.current.amount - chartStats.current.goal), preferences.number_format)} {currencySymbol}, soit {Number((chartStats.current.amount/chartStats.current.goal)*100).toFixed(2)} % du budget fixé.</span>
                     </div>
                 }
                 {
                     !chartStats.current.exceeds &&
                     <div className='bg-green-500/30 text-green-700 flex gap-4 p-2 rounded-md mt-4'>
                         <XCircleIcon className=''/>
-                        <span className='font-bold text-xs text-pretty'>Votre objectif est actuellement atteint, vous avez encore : {Number(chartStats.current.goal - chartStats.current.amount).toFixed(2)} € à dépenser avant de dépasser votre objectif.</span>
+                        <span className='font-bold text-xs text-pretty'>Votre objectif est actuellement atteint, vous avez encore : {formatAmount(Number(chartStats.current.goal - chartStats.current.amount), preferences.number_format)} {currencySymbol} à dépenser avant de dépasser votre objectif.</span>
                     </div>
                 }
             </div>

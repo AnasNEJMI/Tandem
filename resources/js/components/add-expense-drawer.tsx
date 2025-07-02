@@ -21,11 +21,21 @@ import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel"
 import { AnimatePresence } from "motion/react"
 import { Textarea } from "./ui/textarea";
 import { useForm } from "@inertiajs/react";
-import { CategoryWithPlaces, Spender } from "@/types";
+import { CategoryWithPlaces, Preferences, Spender } from "@/types";
 import InputError from "./input-error";
 import { PlusIcon } from "lucide-react";
+import { currencySymbols } from "@/lib/data";
 
-export function AddExpenseDrawer({categories, spenders, open, setOpen} : {categories : CategoryWithPlaces[],spenders : Spender[], open : boolean, setOpen : React.Dispatch<React.SetStateAction<boolean>>}) {
+interface AddExpenseDrawerProps{
+  categories : CategoryWithPlaces[],
+  spenders : Spender[],
+  preferences : Preferences,
+  open : boolean,
+  setOpen : React.Dispatch<React.SetStateAction<boolean>>
+}
+
+
+export function AddExpenseDrawer({categories, spenders, preferences, open, setOpen} : AddExpenseDrawerProps) {
   const {data, setData, post, processing, reset, errors} = useForm({
     amount : '',
     date : '',
@@ -41,6 +51,8 @@ export function AddExpenseDrawer({categories, spenders, open, setOpen} : {catego
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<number>(categories[0].id);
   const [selectedPlaceIds, setSelectedPlaceIds] = React.useState<number[]>([]);
   const [comment, setComment] = React.useState<string>('');
+
+  const currencySymbol = currencySymbols[preferences.currency];
 
   const updateSelectedCategoryId = (categoryId : number) => {
     if(selectedCategoryId === categoryId) return; 
@@ -140,7 +152,7 @@ export function AddExpenseDrawer({categories, spenders, open, setOpen} : {catego
                 max={99}
                 onInput={e => {e.currentTarget.validity.valid||(e.currentTarget.value='');}}
                 className={`text-5xl md:text-5xl text-center font-bold tracking-tighter py-10 w-24 ${errors.amount? "border-red-400 border-2" : ""}`}/>
-              <span className="text-typography font-black text-xl"> €</span>
+              <span className="text-typography font-black text-xl"> {currencySymbol}</span>
             </div>
             <div className="text-[0.70rem] text-muted-foreground">
               Montant de la dépense
@@ -219,8 +231,8 @@ export function AddExpenseDrawer({categories, spenders, open, setOpen} : {catego
             </AnimatePresence>
           </div>
 
-          <div className="absolute left-0 px-6 bottom-0 w-full flex flex-col">
-            <div className="h-px w-full bg-popover-border mt-2 mb-2"></div>
+          <div className="absolute left-0 px-6 bottom-0 w-full flex flex-col bg-background">
+            <div className="h-px w-full bg-popover-border mb-2"></div>
             <span className="text-sm text-typography">Commentaire</span>
             <Textarea disabled = {processing} className="w-full mt-2 p-2 text-sm " value={comment} onChange={e => setComment(e.target.value)} placeholder="Des informations à ajouter?"/>
             <div className="h-px w-full bg-popover-border mt-2 mb-2"></div>

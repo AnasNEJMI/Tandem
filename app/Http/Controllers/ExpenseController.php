@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Expense;
 use App\Models\Place;
+use App\Models\Preference;
 use App\Models\Spender;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -34,11 +35,8 @@ class ExpenseController extends Controller
         $categoryStats = MonthExpensesStatsService::calculatePerCategoryStats($expenses);
         $spenderStats = MonthExpensesStatsService::calculatePerSpenderStats($expenses);
 
-        Log::debug('payload', 
-        [ 'sps', $spenderStats]);
+        $preferences = Preference::where('user_id', $user_id)->firstOrFail();
 
-
-        // $expenses = Expense::latest()->orderBy('date', 'desc')->get();
         return Inertia::render('expenses', 
                             ['expenses' => $expenses->map(function ($expense) {
                                     return [
@@ -85,6 +83,7 @@ class ExpenseController extends Controller
                                         'spenders' => $spenderStats,
                                     ],
                                     'amount' => $amount,
+                                    'preferences' => $preferences,
                                     
                         ]);
     }

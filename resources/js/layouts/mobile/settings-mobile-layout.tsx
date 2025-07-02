@@ -3,11 +3,11 @@ import {AnimatePresence, motion, useScroll, useTransform} from 'motion/react';
 import MobileLayout from './mobile-layout';
 import { ArrowLeft, SettingsIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import SettingsProfile from '@/components/settings-profile';
+import SettingsPreferences from '@/components/settings-preferences';
 import SettingsCategories from '@/components/settings-categories';
 import SettingsSpenders from '@/components/settings-spenders';
 import SettingsVisualisation from '@/components/settings-visualisation';
-import { Category, Spender } from '@/types';
+import { Category, Preferences, Spender } from '@/types';
 
 const title = "Paramètres";
 
@@ -16,10 +16,11 @@ interface SettingsMobileLayoutProps{
     openTab : 'profile'|'categories'|'spenders'|'visualisation'|'none',
     setOpenTab : React.Dispatch<React.SetStateAction<"profile" | "categories" | "spenders" | "visualisation" | "none">>
     categories : Category[],
-    spenders : Spender[]
+    spenders : Spender[],
+    preferences : Preferences,
 }
 
-const SettingsMobileLayout = ({children, openTab, setOpenTab, categories, spenders}
+const SettingsMobileLayout = ({children, openTab, setOpenTab, categories, spenders, preferences}
                             :SettingsMobileLayoutProps) => {
     const targetRef = useRef<HTMLDivElement>(null);
     const {scrollYProgress} = useScroll({
@@ -67,7 +68,7 @@ const SettingsMobileLayout = ({children, openTab, setOpenTab, categories, spende
                     >
                     {
                         openTab === 'profile' &&
-                        <SettingsProfile setOpenTab={setOpenTab}/>
+                        <SettingsPreferences preferences={preferences} setOpenTab={setOpenTab}/>
                     }
                     {
                         openTab === 'categories' &&
@@ -79,7 +80,8 @@ const SettingsMobileLayout = ({children, openTab, setOpenTab, categories, spende
                     }
                     {
                         openTab === 'visualisation' &&
-                        <SettingsVisualisation setOpenTab={setOpenTab}/>
+                        // color='hsl(25 35% 25%)' 
+                        <SettingsVisualisation preferences={preferences} setOpenTab={setOpenTab}/>
                     }
                     </motion.div>
                 }

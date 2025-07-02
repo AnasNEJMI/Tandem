@@ -1,3 +1,5 @@
+import { Category, Spender } from "@/types";
+
 const popularCoursesPlacesInFrance: string[] = [
   // Grandes surfaces et hypermarchés
   "Leclerc",
@@ -327,3 +329,139 @@ export const colors = [
         '349.7 89.2% 60.2%','346.8 77.2% 49.8%','345.3 82.7% 40.8%','343.4 79.7% 34.7%','341.5 75.5% 30.4%','343.1 87.7% 15.9%'
     ]
 ]
+
+
+export const currencies = [
+    {
+        code : 'D',
+        name : 'Dollar ($)'
+    },
+    {
+        code : 'EUR',
+        name : 'Euro (€)'
+    },
+    {
+        code : 'P',
+        name : 'Pound (£)'
+    },
+    {
+        code : 'Y',
+        name : 'Yen/Yuan (¥)'
+    },
+    {
+        code : 'CHF',
+        name : 'Franc (CHF)'
+    },
+]
+
+export function getLanguageLabel(value : string){
+    switch(value){
+        case 'fr' : return 'Français';
+        case 'en' : return 'English';
+        default : return 'Français';
+    }
+}
+export function getThemeLabel(value : string){
+    switch(value){
+        case 'light' : return 'Light';
+        case 'dark' : return 'Dark';
+        default : return 'Light';
+    }
+}
+export function getCurrencyLabel(value : string){
+    switch(value){
+        case 'EUR' : return 'Euro (€)';
+        case 'D' : return 'Dollar ($)';
+        case 'Y' : return 'Yen/Yuan (¥)';
+        case 'P' : return 'Pound (£)';
+        case 'CHF' : return 'Franc (CHF)';
+        default : return 'Euro (€)';
+    }
+}
+export function getNumberFormatLabel(value : string){
+    switch(value){
+        case 'dc' : return '1.000,00';
+        case 'cd' : return '1,000.00';
+        default : return '1.000,00';
+    }
+}
+export function getDateFormatLabel(value : string){
+    switch(value){
+        case 'dmy' : return 'J/M/A';
+        case 'mdy' : return 'M/J/A';
+        default : return 'J/M/A';
+    }
+}
+
+export const numberFormats : Record<string, {thousands : string, decimal:string}> = {
+    cd: { thousands: ",", decimal: "." },
+    dc: { thousands: ".", decimal: "," },
+    sd: { thousands: " ", decimal: "." },
+    sc: { thousands: " ", decimal: "," },
+}
+
+export const currencySymbols : Record<string, string> = {
+    EUR: '€', 
+    D: '$', 
+    Y: '¥',
+    P: '£',
+    CHF : 'CHF'
+}
+
+export const formatAmount = (amount : number, format : string) => {
+    const config = numberFormats[format];
+
+    if(!config){
+        console.error('unknow number format', format);
+        return amount.toString();
+    }
+
+    const [integer, decimal] = Number(amount).toFixed(2).split('.');
+
+    const formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, config.thousands);
+    return `${formattedInteger}${config.decimal}${decimal}`;
+}
+
+export const formatDate = (date : string, format : string, separator = '-') => {
+    const [year, month, day] = date.split(separator);
+    switch(format){
+        case 'mdy' : 
+            return `${month}/${day}/${year}`
+        case 'dmy' : 
+            return `${day}/${month}/${year}`
+            default : 
+            console.error('unknown date format ', format);
+            return `${day}/${month}/${year}`
+    }
+}
+
+export const areSpenderArraysEqual = (a: Spender[], b: Spender[]): boolean => {
+  if (a.length !== b.length) return false;
+
+  const sortById = (arr: Spender[]) => [...arr].sort((x, y) => x.id - y.id);
+
+  const aSorted = sortById(a);
+  const bSorted = sortById(b);
+
+  return aSorted.every((sp, i) => {
+    const other = bSorted[i];
+    return (
+      sp.id === other.id
+    );
+  });
+};
+export const areCategoryArraysEqual = (a: Category[], b: Category[]): boolean => {
+  if (a.length !== b.length) return false;
+
+  const sortById = (arr: Category[]) => [...arr].sort((x, y) => x.id - y.id);
+
+  const aSorted = sortById(a);
+  const bSorted = sortById(b);
+
+  return aSorted.every((sp, i) => {
+    const other = bSorted[i];
+    return (
+      sp.id === other.id
+    );
+  });
+};

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Expense;
+use App\Models\Preference;
 use App\Models\Spender;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,12 +28,16 @@ class StatsController extends Controller
         
         $monthStats = StatsService::getMonthlySpendingStats($user, [['index'=>$month-2, 'year'=>$year], ['index'=>$month-1, 'year'=>$year],['index'=>$month, 'year'=>$year]]);
         $evolutionStats = StatsService::getSpendingEvolutionStats($user, 3, $spenders, $categories, 'comparison');
+        
+        $preferences = Preference::where('user_id', $user_id)->firstOrFail();
+
         return Inertia::render('stats', 
             [
                 'month_stats' => $monthStats,
                 'evolution_stats' => $evolutionStats,
                 'spenders' => $spenders,
                 'categories' => $categories,
+                'preferences' => $preferences,
             ]);
     }
 

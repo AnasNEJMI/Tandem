@@ -1,39 +1,40 @@
+import { colors } from '@/lib/data';
+import { router, useForm } from '@inertiajs/react';
 import React, { FormEvent, useState } from 'react'
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from './ui/dialog'
-import { cn } from '@/lib/utils'
-import { ArrowLeft, Plus, Shapes } from 'lucide-react'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
-import { router, useForm } from '@inertiajs/react'
-import { colors } from '@/lib/data'
-import ColorPicker from './color-picker'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { Button } from './ui/button';
+import { ArrowLeft, Plus, UsersIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Input } from './ui/input';
+import ColorPicker from './color-picker';
 
-interface CreateCategoryProps{
+interface CreateSpenderProps{
     className? : string,
 }
 
-interface CreateCategoryDataForm{
+interface CreateSpenderDataForm{
     name : string,
     color : string,
     [k : string] : any,
 }
-const CreateCategory = ({className} : CreateCategoryProps) => {
+
+const CreateSpender = ({className} : CreateSpenderProps) => {
     const [open, setOpen] = useState(false);
-    const {data, setData, post, reset, processing, errors} = useForm<CreateCategoryDataForm>({
+    const {data, setData, post, reset, processing, errors} = useForm<CreateSpenderDataForm>({
         name : '',
         color : colors[0][0],
     })
 
-    const handleCreateCategorySubmit = (e : FormEvent) => {
+    const handleCreateSpenderSubmit = (e : FormEvent) => {
         e.preventDefault();
 
-        post('/settings/category',{
+        post('/settings/spender',{
             preserveScroll : true,
             preserveState : true,
             onSuccess : () => {
                 reset();
                 setOpen(false);
-                router.reload({only:['categories']});
+                router.reload({only:['spenders']});
             }
         })
     }
@@ -52,19 +53,19 @@ const CreateCategory = ({className} : CreateCategoryProps) => {
                     </Button>
                 </DialogClose>
             </div>
-            <form onSubmit={handleCreateCategorySubmit}>
+            <form onSubmit={handleCreateSpenderSubmit}>
                 <DialogHeader>
                     <DialogTitle className='flex flex-col items-center justify-center mt-8'>
-                        <Shapes className='w-12 h-12'/>
-                        <span className='font-bold text-xl'>Créer une catégorie</span>
+                        <UsersIcon className='w-12 h-12'/>
+                        <span className='font-bold text-xl'>Ajouter une personne</span>
                     </DialogTitle>
                     <DialogDescription className='text-balance text-sm font-light'>
-                        Ajouter une nouvelle catégorie en choisissant un nom et une couleur
+                        Donnez un nom et choisissez une couleur
                     </DialogDescription>
                 </DialogHeader>
                 <div className='mt-8'>
-                    <span className='font-bold text-muted-foreground text-sm'>Intitulé </span>
-                    <Input 
+                    <span className='font-bold text-muted-foreground text-sm'>Nom </span>
+                    <Input
                         value={data.name}
                         onChange={(e) => setData('name', e.target.value)}
                         className='text-xl font-bold h-14 mt-2'
@@ -88,4 +89,4 @@ const CreateCategory = ({className} : CreateCategoryProps) => {
   )
 }
 
-export default CreateCategory
+export default CreateSpender

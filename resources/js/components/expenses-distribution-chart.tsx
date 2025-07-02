@@ -11,12 +11,15 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { Expense, MonthlyCategoryStats } from "@/types"
+import { Expense, MonthlyCategoryStats, Preferences } from "@/types"
+import { formatAmount } from "@/lib/data"
+import useCurrencySymbol from "@/hooks/use-currency-symbol"
 
 interface ExpensesDistributionChartProps{
     stats : MonthlyCategoryStats,
     amount : number,
     totalExpenses : number,
+    preferences : Preferences
 }
 
 interface CategoryData{
@@ -25,8 +28,9 @@ interface CategoryData{
     fill : string,
 }
 
-export function ExpensesDistributionChart({totalExpenses, stats, amount} : ExpensesDistributionChartProps) {
+export function ExpensesDistributionChart({totalExpenses, stats, amount, preferences} : ExpensesDistributionChartProps) {
     const [canRenderChart, setCanRenderChart] = React.useState(false)
+    const currencySymbol = useCurrencySymbol(preferences.currency);
 
     React.useEffect(() => {
         if (totalExpenses > 0) {
@@ -39,38 +43,6 @@ export function ExpensesDistributionChart({totalExpenses, stats, amount} : Expen
             setCanRenderChart(false)
         }
     }, [])
-
-    // const chart = React.useMemo(() => {
-    //     const categoryMap = new Map<string, {color : string, amount : number}>();
-
-    //     for(let i = 0; i < expenses.length ; i++){
-    //         const name = expenses[i].category.name;
-    //         const currentTotal = categoryMap.get(name) || {color : expenses[i].category.color, amount : 0};
-    //         categoryMap.set(name, {color : currentTotal.color, amount : currentTotal.amount + Number(expenses[i].amount)});
-    //     }
-
-    //     const data : CategoryData[] = [];
-    //     const config : ChartConfig = {} satisfies ChartConfig;
-    //     let chartIndex = 1;
-
-    //     for(const [category, value] of categoryMap.entries()){
-    //         data.push({name : category, amount : value.amount, fill : value.color});
-            
-    //         config[category] = {
-    //             label : category,
-    //             color : value.color,
-    //         }
-
-    //         chartIndex++;
-    //     }
-
-    //     data.sort((a, b) => {
-    //         return b.amount - a.amount;
-    //     });
-
-    //     return {data : data, config : config};
-    // }, [expenses])
-  
 
   return (
     <div className="mt-12">
@@ -158,7 +130,7 @@ export function ExpensesDistributionChart({totalExpenses, stats, amount} : Expen
                                     <span className="text-muted-foreground">{data.name}</span>
                                 </div>
                                 
-                                <span className="font-bold ">{Number(data.amount).toFixed(2).toString().split('.').join(',')} €</span>
+                                <span className="font-bold ">{formatAmount(Number(data.amount), preferences.number_format)} {currencySymbol}</span>
                             </li>
                         ))
                     }

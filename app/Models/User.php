@@ -49,4 +49,8 @@ class User extends Authenticatable
     public function setupProgress() {
         return $this->hasOne(SetupProgress::class);
     }
+
+    public function preferences(){
+        return $this->hasOne(Preference::class);
+    }
 }

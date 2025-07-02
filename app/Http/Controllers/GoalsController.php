@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Goal;
+use App\Models\Preference;
 use App\Models\Spender;
 use App\Services\GoalsService;
 use Illuminate\Http\Request;
@@ -18,10 +19,13 @@ class GoalsController extends Controller
         $spenders = Spender::where('user_id', $user->id)->get();
 
         $stats = GoalsService::getGoalStats($user, 6);
+
+        $preferences = Preference::where('user_id', $user->id)->firstOrFail();
         return Inertia::render('goals',[
             'goal_stats' => $stats,
             'categories' => $categories,
             'spenders' => $spenders,
+            'preferences' => $preferences
         ]);
     }
 
@@ -47,6 +51,7 @@ class GoalsController extends Controller
         ]);
 
         $stats = GoalsService::getGoalStats($user, 6);
+
 
         Inertia::render('goals', [
             'goal_stats' => $stats,

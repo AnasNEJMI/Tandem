@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { GoalStats } from '@/types'
+import { GoalStats, Preferences } from '@/types'
 import { Card, CardContent, CardTitle } from './ui/card';
 import GoalCards from './goal-cards';
 import { CircleXIcon } from 'lucide-react';
@@ -8,9 +8,10 @@ import { cn } from '@/lib/utils';
 interface GoalTabsProps{
     className? : string,
     goalStats : GoalStats[],
+    preferences : Preferences
 }
 
-const GoalsTabs = ({className, goalStats} : GoalTabsProps) => {
+const GoalsTabs = ({className, goalStats, preferences} : GoalTabsProps) => {
     const [tab, setTab] = useState<'w'|'m'|'y'>('w');
     const selectedGoals = useMemo(() => {
         return goalStats.length > 0? goalStats.filter((goal) => goal.period === tab) : [];
@@ -95,15 +96,15 @@ const GoalsTabs = ({className, goalStats} : GoalTabsProps) => {
 
         {
             tab === 'w' && selectedGoals.length > 0 &&
-            <GoalCards className='mt-4 bg-white' period={'w'} goalStats={selectedGoals}/>
+            <GoalCards preferences={preferences} className='mt-4 bg-white' period={'w'} goalStats={selectedGoals}/>
         }
         {
             tab === 'm' && selectedGoals.length > 0 &&
-            <GoalCards className='mt-4 bg-white' period={'m'} goalStats={selectedGoals}/>
+            <GoalCards preferences={preferences} className='mt-4 bg-white' period={'m'} goalStats={selectedGoals}/>
         }
         {
             tab === 'y' && selectedGoals.length > 0 &&
-            <GoalCards className='mt-4 bg-white' period={'y'} goalStats={selectedGoals}/>
+            <GoalCards preferences={preferences} className='mt-4 bg-white' period={'y'} goalStats={selectedGoals}/>
         }
             
     </div>

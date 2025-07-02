@@ -15,7 +15,7 @@ const SpenderDropdown = ({spenders, spenderId, setSpenderId, error} : {spenders 
               <SelectLabel>Personnes</SelectLabel>
                {
                 spenders.map((spender, index) => (
-                  <SelectItem key={`spender${spender.id}`} value={spender.id.toString()}>{spender.name}</SelectItem>
+                  <SelectItem key={`spender-${index}`} value={spender.id.toString()}>{spender.name}</SelectItem>
                 ))
                }
             </SelectGroup>

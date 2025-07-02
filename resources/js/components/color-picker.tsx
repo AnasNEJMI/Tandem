@@ -1,25 +1,30 @@
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 import { Button } from './ui/button';
 import { ArrowLeft, Pipette } from 'lucide-react';
 import { colors } from '@/lib/data';
+import { cn } from '@/lib/utils';
 
 interface ColorPickerProps{
+    className? : string,
     color : string,
     setColor : (color : string) => void;
 }
-const ColorPicker = ({color, setColor} : ColorPickerProps) => {
+const ColorPicker = ({color, setColor, className} : ColorPickerProps) => {
     const [open, setOpen] = useState(false);
     const [selectedColor, setSelectedColor] = useState(color);
+    
+    const updateColorAndClose = useCallback(() => {
+          setColor(selectedColor);
+          setOpen(false);
+    },[selectedColor])
+    
 
-    const updateColor = () =>{
-        setColor(selectedColor);
-        setOpen(false);
-    }
+
   return (
     <Sheet open = {open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-            <Button style={{borderColor : color}} variant={'default'} className='w-16 h-16 rounded-full border-4'>
+            <Button style={{borderColor : color}} variant={'default'} className={cn('w-16 h-16 rounded-full border-4', className)}>
                 <Pipette />
             </Button>
         </SheetTrigger>
@@ -56,7 +61,7 @@ const ColorPicker = ({color, setColor} : ColorPickerProps) => {
                     </div>
                 </div>
                 <SheetFooter>
-                    <Button disabled = {color === selectedColor} onClick={() => updateColor()} variant={'default'} className='py-6'>
+                    <Button disabled = {color === selectedColor} onClick={updateColorAndClose} variant={'default'} className='py-6'>
                         Confirmer
                     </Button>
                 </SheetFooter>

@@ -4,23 +4,27 @@ import ParamsIconDropdownMenu from '@/components/params-icon-dropdown-menu';
 import { AddExpenseDrawer } from '@/components/add-expense-drawer';
 import MobileLayout from './mobile-layout';
 import { WalletIcon } from 'lucide-react';
-import { CategoryWithPlaces, Spender } from '@/types';
+import { CategoryWithPlaces, Preferences, Spender } from '@/types';
 import { cn } from '@/lib/utils';
 
 const title = "Dépenses";
 
-const ExpensesMobileLayout = ({className, children,categories, spenders,showExpensesRecapCard, showExpensesRepartitionCard, showExpensesDetailsCard, setShowExpensesRecapCard, setShowExpensesRepartitionCard, setShowExpensesDetailsCard}
-                            :{className? : string,
-                              children : React.ReactNode,
-                              showExpensesRecapCard : boolean,
-                              showExpensesRepartitionCard : boolean,
-                              showExpensesDetailsCard : boolean,
-                              setShowExpensesRecapCard : React.Dispatch<React.SetStateAction<boolean>>,
-                              setShowExpensesRepartitionCard : React.Dispatch<React.SetStateAction<boolean>>,
-                              setShowExpensesDetailsCard :React.Dispatch<React.SetStateAction<boolean>>
-                              categories : CategoryWithPlaces[],
-                              spenders : Spender[],
-                            }) => {
+interface ExpenseMobileLyoutProps{
+  className? : string,
+  children : React.ReactNode,
+  categories : CategoryWithPlaces[],
+  spenders : Spender[],
+  preferences : Preferences
+  showExpensesRecapCard : boolean,
+  showExpensesRepartitionCard : boolean,
+  showExpensesDetailsCard : boolean,
+  setShowExpensesRecapCard : React.Dispatch<React.SetStateAction<boolean>>,
+  setShowExpensesRepartitionCard : React.Dispatch<React.SetStateAction<boolean>>,
+  setShowExpensesDetailsCard :React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const ExpensesMobileLayout = ({className, children,categories,spenders, preferences, showExpensesRecapCard, showExpensesRepartitionCard, showExpensesDetailsCard, setShowExpensesRecapCard, setShowExpensesRepartitionCard, setShowExpensesDetailsCard}
+                            :ExpenseMobileLyoutProps) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const targetRef = useRef<HTMLDivElement>(null);
     const {scrollYProgress} = useScroll({
@@ -70,7 +74,7 @@ const ExpensesMobileLayout = ({className, children,categories, spenders,showExpe
         </main>
     </MobileLayout>
     <div className='fixed bottom-28 right-4 z-50'>
-      <AddExpenseDrawer open = {drawerOpen} setOpen = {setDrawerOpen} categories = {categories} spenders = {spenders}/>
+      <AddExpenseDrawer preferences = {preferences} open = {drawerOpen} setOpen = {setDrawerOpen} categories = {categories} spenders = {spenders}/>
     </div>
     </>
   )

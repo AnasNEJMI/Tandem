@@ -5,7 +5,7 @@ import ExpensesMonthYearSelect from '@/components/expenses-month-year-select';
 import ExpensesPresentationElement from '@/components/expenses-presentation-element';
 import ExpensesDistributionPerUserChart from '@/components/expenses-distribution-per-user-chart';
 import ExpensesMobileLayout from '@/layouts/mobile/expenses-mobile-layout';
-import { CategoryWithPlaces, Expense, MonthAndYear, MonthlyCategoryStats, MonthlyStats, Spender, type SharedData } from '@/types';
+import { CategoryWithPlaces, Expense, MonthAndYear, MonthlyCategoryStats, MonthlyStats, Preferences, Spender, type SharedData } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { InfoIcon } from 'lucide-react';
 import {useEffect, useState } from 'react';
@@ -13,13 +13,14 @@ import {useEffect, useState } from 'react';
 interface ExpensesProps{
     expenses : Expense[];
     categories : CategoryWithPlaces[],
-    spenders : Spender[]
+    spenders : Spender[],
+    preferences : Preferences,
     date: MonthAndYear,
     stats : MonthlyStats,
     amount : number
 }
 
-export default function Expenses({expenses, categories, spenders, date, stats, amount} : ExpensesProps) {
+export default function Expenses({expenses, categories, spenders, preferences, date, stats, amount} : ExpensesProps) {
     const [showExpensesRecapCard, setShowExpensesRecapCard] = useState(true);
     const [showExpensesRepartitionCard, setShowExpensesRepartitionCard] = useState(true);
     const [showExpensesDetailsCard, setShowExpensesDetailsCard] = useState(true);
@@ -32,6 +33,11 @@ export default function Expenses({expenses, categories, spenders, date, stats, a
     const onDateChange = (date : Date) => {
         setData('date', date);
     }
+
+    useEffect(() => {
+        console.log('preferences ', preferences);
+    }, [preferences])
+    
     return (
         <>
             <Head title="Expenses">
@@ -51,23 +57,24 @@ export default function Expenses({expenses, categories, spenders, date, stats, a
 
                 categories = {categories}
                 spenders = {spenders}
+                preferences={preferences}
             >
                 <ExpensesMonthYearSelect date = {data.date} onChange={onDateChange}/>
                 {
                     expenses.length > 0  && 
-                    <ExpensesPresentationElement expenses = {expenses}/>
+                    <ExpensesPresentationElement preferences = {preferences} expenses = {expenses}/>
                 }
                 {
                     expenses.length > 0 && 
-                    <ExpensesDistributionChart totalExpenses={expenses.length} amount={amount} stats={stats.categories}/>
+                    <ExpensesDistributionChart preferences = {preferences} totalExpenses={expenses.length} amount={amount} stats={stats.categories}/>
                 }
                 {
                     expenses.length > 0 && 
-                    <ExpensesDistributionPerUserChart totalExpenses={expenses.length} stats = {stats.spenders}/>
+                    <ExpensesDistributionPerUserChart preferences = {preferences} totalExpenses={expenses.length} stats = {stats.spenders}/>
                 }
                 {
                     showExpensesDetailsCard && expenses.length > 0 &&
-                    <ExpensesDetailsCard expenses = {expenses} categories={categories} spenders={spenders}/>
+                    <ExpensesDetailsCard preferences = {preferences} expenses = {expenses} categories={categories} spenders={spenders}/>
                 }
 
                 {

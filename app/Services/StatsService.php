@@ -142,7 +142,7 @@ class StatsService{
                                                                 'name' => $spName,
                                                                 'amount' => $spExpenses->sum('amount'),
                                                                 'transactions' => (int) $spExpenses->count(),
-                                                                'color' => $spExpenses->first()->category->color,
+                                                                'color' => $spExpenses->first()->spender->color,
                                                                 'categories' => $spExpenses->groupBy('category_id')->map(function($group){
                                                                     return [
                                                                         'name' => $group->first()->category->name,

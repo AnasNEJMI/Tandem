@@ -1,13 +1,20 @@
-import { Expense } from '@/types'
+import { Expense, Preferences } from '@/types'
 import { HouseIcon, PlaneIcon, PlugIcon, PuzzleIcon, ShoppingCartIcon, SoupIcon, WindIcon } from 'lucide-react'
 import { useEffect } from 'react';
 import CategoryIcon from './category-icon';
+import { currencySymbols, formatAmount, formatDate } from '@/lib/data';
 
-const ExpenseDetails = ({expense} : {expense : Expense}) => {
-    function formatDate(input: string): string {
-        const [year, month, day] = input.split("-");
-        return `${day}/${month}/${year}`;
-    }
+interface ExpenseDetailsProps{
+    expense : Expense,
+    preferences : Preferences,
+}
+
+const ExpenseDetails = ({expense, preferences} : ExpenseDetailsProps) => {
+    const currencySymbol = currencySymbols[preferences.currency];
+    // function formatDate(input: string): string {
+    //     const [year, month, day] = input.split("-");
+    //     return `${day}/${month}/${year}`;
+    // }
     
   return (
     <div className={`flex items-center gap-4 rounded-md before:bg-white relative before:absolute before:w-full before:h-full before:z-10 before:left-0 before:-top-1 before:border-t before:border-card-border before:rounded-md before:shadow-lg`}>
@@ -33,8 +40,8 @@ const ExpenseDetails = ({expense} : {expense : Expense}) => {
                 </p>
             </div>
             <div className='flex flex-col z-20 gap-1'>
-                <span className="font-bold">{expense.amount.toString().split('.').join(',')}€</span>
-                <span className='text-[0.7rem] text-muted-foreground'>{formatDate(expense.date)}</span>
+                <span className="font-bold">{formatAmount(Number(expense.amount), preferences.number_format)} {currencySymbol}</span>
+                <span className='text-[0.7rem] text-muted-foreground'>{formatDate(expense.date, preferences.date_format)}</span>
             </div>
         </div>
     </div>

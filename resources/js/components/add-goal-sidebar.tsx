@@ -41,8 +41,6 @@ const AddGoalSidebar = ({className, spenders, categories} : AddGoalSidebarProps)
     const handleGoalSubmit = (e : FormEvent) =>  {
         e.preventDefault();
 
-        console.log('data to submit', data);
-
         post('/goals', {
             preserveScroll : true,
             preserveState : true,

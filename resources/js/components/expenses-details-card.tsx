@@ -1,4 +1,4 @@
-import { Category, Expense, Spender } from '@/types'
+import { Category, Expense, Preferences, Spender } from '@/types'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import ExpenseDetails from './expense-details';
 import { ExpensesDetailsFiltersSidebar } from './expenses-details-filters-sidebar';
@@ -9,14 +9,13 @@ interface ExpensesRecapCardProp{
     expenses : Expense[],
     categories : Category[],
     spenders : Spender[],
+    preferences : Preferences
 }
 
-// const expenseCategories = ["Tout","Courses","Loyer","Électricité","Gaz","Voyage","Restaurant","Loisirs"];
-// const expenseSpenders = ["Anas", "Elham"];
 const expenseOrderBy = "Date";
 const expenseOrderByDirection = "Décroissant";
 
-const ExpensesDetailsCard = ({expenses, categories, spenders} : ExpensesRecapCardProp) => {
+const ExpensesDetailsCard = ({expenses, categories, spenders, preferences} : ExpensesRecapCardProp) => {
     const [selectedCategories, setSelectedCategories] = useState<Category[]>(categories);
     const [selectedSpenders, setSelectedSpenders] = useState<Spender[]>(spenders);
     const [orderBy, setOrderBy] = useState<"Montant" | "Date">(expenseOrderBy);
@@ -84,25 +83,13 @@ const ExpensesDetailsCard = ({expenses, categories, spenders} : ExpensesRecapCar
         <div className='flex flex-col scrollabe-element pb-20'>
             <ul className='flex flex-col max-h-[350px] gap-4 pt-4'>
                 {
-                    filteredExpenses.length > 0 && filteredExpenses.map((expense, index) => <ExpenseDetails expense={expense} key={index} />)
+                    filteredExpenses.length > 0 && filteredExpenses.map((expense, index) => <ExpenseDetails preferences = {preferences} expense={expense} key={index} />)
                 }
                 {
                     filteredExpenses.length === 0 && <div className='text-muted-foreground flex gap-2 w-full justify-center items-center text-sm flex-col'><InfoIcon size={32}/> <span className='text-pretty text-center'>Aucune dépense qui correspond aux filtres sélectionnés.</span></div>
                 }
             </ul>
         </div>
-        {/* <Card className="rounded-xl bg-white opacity-100 translate-y-0 duration-750 starting:opacity-0 starting:translate-y-6 transition-all">
-            <CardContent className=" flex flex-col scrollabe-element gap-2">
-                <div className='flex flex-col gap-2 max-h-[350px] pt-6'>
-                {
-                    filteredExpenses.length > 0 && filteredExpenses.map((expense, index) => <ExpenseDetails expense={expense} key={index} />)
-                }
-                {
-                    filteredExpenses.length === 0 && <div className='text-muted-foreground flex gap-2 w-full justify-center items-center text-sm flex-col'><InfoIcon size={32}/> <span className='text-pretty text-center'>Aucune dépense qui correspond aux filtres sélectionnés.</span></div>
-                }
-                </div>
-            </CardContent>
-        </Card> */}
     </div>
   )
 }

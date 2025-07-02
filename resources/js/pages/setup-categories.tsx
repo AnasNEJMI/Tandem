@@ -56,8 +56,6 @@ const SetupCategories = () => {
     }else{
       setData('categories', [...data.categories, {'name' : category, 'color': getColor(category)}]);
     }
-    
-    // console.log('categories length : ',data.categories.length, 'category ', category, ' in ? ', data.categories.some(cat => cat.name === category));
   }
   
   

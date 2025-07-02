@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Preference;
 use App\Models\SetupProgress;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -47,6 +48,17 @@ class RegisteredUserController extends Controller
             'user_id' => $user->id,
             'current_step' => 'spenders',
             'is_completed' => false,
+        ]);
+
+        Preference::create([
+            'user_id' => $user->id,
+            'currency' => 'EUR',
+            'language' => 'fr',
+            'theme' => 'light',
+            'number_format' => 'cd',
+            'date_format' => 'dmy',
+            'charts_color' => 'hsl(198.6 88.7% 48.4%)',
+            'charts_style' => 'line',
         ]);
 
         event(new Registered($user));

@@ -1,31 +1,32 @@
+import { Spender } from '@/types'
+import { router, useForm } from '@inertiajs/react';
 import React, { FormEvent, useState } from 'react'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
-import { Button } from './ui/button'
-import { Trash } from 'lucide-react'
-import { Category } from '@/types'
-import {router, useForm } from '@inertiajs/react'
-import { cn } from '@/lib/utils'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { Button } from './ui/button';
+import { Trash } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-interface DeleteCategoryProps{
+interface DeleteSpenderProps{
     className?:string,
-    category : Category
+    spender : Spender
 }
-const DeleteCategory = ({category, className} : DeleteCategoryProps) => {
+
+const DeleteSpender = ({spender, className} : DeleteSpenderProps) => {
     const [open, setOpen] = useState(false);
     const {data,delete : destroy, processing, errors, reset} = useForm({
-        'category_id' : category.id
+        'spender_id' : spender.id
     });
     const handleDeleteSubmit = (e : FormEvent) => {
         e.preventDefault();
 
-        console.log("about to delete category : ", category, ' data is : ',data);
-        destroy('settings/category', {
+        console.log("about to delete category : ", spender, ' data is : ',data);
+        destroy('settings/spender', {
             preserveScroll : true,
             preserveState : true,
             onSuccess: () => {
                 reset();
                 setOpen(false);
-                router.reload({only : ['categories']});
+                router.reload({only : ['spenders']});
             }
         })
     }
@@ -44,8 +45,8 @@ const DeleteCategory = ({category, className} : DeleteCategoryProps) => {
                     <span>Supprimer la catégorie?</span>
                 </DialogTitle>
                 <DialogDescription className=' flex flex-col items-center justify-center'>
-                    <span className='font-bold text-lg text-typography'>{category.name}</span>
-                    <span className='text-start'>{category.transactions} transactions</span>
+                    <span className='font-bold text-lg text-typography'>{spender.name}</span>
+                    <span className='text-start'>{spender.transactions} transactions</span>
                 </DialogDescription>
                 </DialogHeader>
                 <p className="flex items-center gap-2 text-center text-pretty text-sm">
@@ -67,4 +68,4 @@ const DeleteCategory = ({category, className} : DeleteCategoryProps) => {
   )
 }
 
-export default DeleteCategory
+export default DeleteSpender

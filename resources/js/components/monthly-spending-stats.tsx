@@ -6,13 +6,15 @@ import { Toggle } from './ui/toggle'
 import {CircleXIcon, TrendingDown, TrendingUp, UserIcon } from 'lucide-react'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart'
 import { Label, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, RadialBar, RadialBarChart } from 'recharts'
-import { MonthStats } from '@/types'
+import { MonthStats, Preferences } from '@/types'
 import { cn } from '@/lib/utils'
 import { useForm } from '@inertiajs/react'
+import { currencySymbols, formatAmount } from '@/lib/data'
 
 interface MonthlySpendingStatsProps{
     className? : string,
     stats : MonthStats[];
+    preferences : Preferences,
 }
 
 const monthData = [
@@ -69,9 +71,11 @@ const monthData = [
 
 const numMonthTabs = 10;
 
-const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) => {
+const MonthlySpendingStats = ({className, stats, preferences} : MonthlySpendingStatsProps) => {
     const [statsApi, setStatsApi] = React.useState<CarouselApi>()
     const [monthApi, setMonthApi] = React.useState<CarouselApi>()
+
+    const currencySymbol = currencySymbols[preferences.currency];
 
     const [selectedTab, setSelectedTab] = useState(0);
     const [selectedMonthStats, setSelectedMonthStats] = useState(stats[stats.length-1]);
@@ -218,7 +222,7 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
                         stats.map((monthStats, index) => (
                             <Toggle pressed = {selectedMonthStats.month === monthStats.month} onPressedChange={() => {setSelectedMonthStats(monthStats); updatedSelectedTab(0);}} variant={'default'} key={index} className='w-full flex-1 h-full data-[state=on]:bg-white data-[state=on]:shadow-sm rounded-xl p-2 flex items-center justify-center flex-col'>
                                 <span className={`${selectedMonthStats.month === monthStats.month? 'text-typography' : 'text-muted-foreground'} font-light text-sm`}>{monthStats.month.split(' ')[0]}</span>
-                                <span className={`${selectedMonthStats.month === monthStats.month? 'text-typography' : 'text-muted-foreground'} font-black`}>{Number(monthStats.amount).toFixed(2)} €</span>
+                                <span className={`${selectedMonthStats.month === monthStats.month? 'text-typography' : 'text-muted-foreground'} font-black`}>{formatAmount(Number(monthStats.amount), preferences.number_format)} {currencySymbol}</span>
                             </Toggle>
                         ))
                     }
@@ -248,7 +252,7 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
                     </div>
                     <div className='flex flex-col items-center justify-center flex-1 w-full'>
                         <span className='text-[0.7rem] text-muted-foreground font-light'>Total</span>
-                        <span className='text-typography font-black rounded-lg'>{Number(selectedMonthStats.amount).toFixed(2).split('.').join(',')} €</span>
+                        <span className='text-typography font-black rounded-lg'>{formatAmount(Number(selectedMonthStats.amount), preferences.number_format)} {currencySymbol}</span>
                         {/* <span className='flex items-center text-sm font-bold gap-2'><TrendingDown className='w-4 h-4'/>10,2%</span> */}
                     </div>
                 </div>
@@ -271,12 +275,12 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
                                 className="mx-auto aspect-square max-h-[270px]"
                                 >
                                     <RadarChart data={categoryData.data} className='mt-8 pb-4 [&_svg]:overflow-visible'>
-                                        <PolarGrid gridType="polygon" className='fill-sky-300 opacity-20'/>
+                                        <PolarGrid gridType="polygon" style={{fill : preferences.charts_color}} className='opacity-20'/>
                                         <PolarAngleAxis dataKey="category" />
                                         <Radar
                                         className='overflow-visible'
                                         dataKey="amount"
-                                        fill="hsl(var(--chart-1))"
+                                        fill={preferences.charts_color}
                                         fillOpacity={0.6}
                                         dot={{
                                             r: 4,
@@ -296,9 +300,9 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
                                                     <span style={{backgroundColor : category.color}} className='rounded-full w-full h-1'></span>
                                                 </div>
                                                 
-                                                <span className='text-[0.7rem] text-muted-foreground mt-2'>Total : <span className='font-bold'>{Number(category.amount).toFixed(2)} € / {Number(selectedMonthStats.amount).toFixed(2).toString()} €</span></span>
-                                                <span className='text-[0.7rem] text-muted-foreground'>Pourcentage : <span className='font-bold'>{Number(category.amount/selectedMonthStats.amount*100).toFixed(2)} %</span></span>
-                                                <span className='text-[0.7rem] text-muted-foreground'>Transactions : <span className='font-bold'>{category.transactions} / {selectedMonthStats.transactions}</span></span>
+                                                <span className='text-[0.7rem] font-bold text-muted-foreground mt-2'>Total : <span className='font-normal text-nowrap'>{formatAmount(Number(category.amount), preferences.number_format)} € / {formatAmount(Number(selectedMonthStats.amount), preferences.number_format)} {currencySymbol}</span></span>
+                                                <span className='text-[0.7rem] font-bold text-muted-foreground mt-1'>Pourcentage : <span className='font-normal'>{Number(category.amount/selectedMonthStats.amount*100).toFixed(2)} %</span></span>
+                                                <span className='text-[0.7rem] font-bold text-muted-foreground mt-1'>Transactions : <span className='font-normal'>{category.transactions} / {selectedMonthStats.transactions}</span></span>
                                             </div>
                                         </div>
                                     ))
@@ -360,7 +364,7 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
                                         }
                                     </RadialBarChart>
                                 </ChartContainer>
-                                <div className='grid grid-cols-2 items-center justify-start w-full'>
+                                <div className='grid grid-cols-2 gap-2 items-start justify-start w-full'>
                                 {
                                     selectedMonthStats.spenders.map((spender, index) => (
                                         <div key={index} className='w-full flex justify-center items-center gap-2'>
@@ -371,9 +375,9 @@ const MonthlySpendingStats = ({className, stats} : MonthlySpendingStatsProps) =>
                                                     <span style={{backgroundColor : spender.color}} className='rounded-full w-full h-1'></span>
                                                 </div>
                                                 
-                                                <span className='text-[0.7rem] text-muted-foreground mt-2'>Total : <span className='font-bold'>{spender.amount} € / {selectedMonthStats.amount.toString()} €</span></span>
-                                                <span className='text-[0.7rem] text-muted-foreground'>Transactions : <span className='font-bold'>{spender.transactions} / {selectedMonthStats.transactions}</span></span>
-                                                <span className='text-[0.7rem] text-muted-foreground'>Pourcentage : <span className='font-bold'>{Number(spender.transactions/selectedMonthStats.transactions*100).toFixed(2)} %</span></span>
+                                                <span className='text-[0.7rem] font-bold text-muted-foreground mt-2'>Total : <span className='font-normal text-nowrap'>{formatAmount(Number(spender.amount), preferences.number_format)} {currencySymbol} / {formatAmount(Number(selectedMonthStats.amount), preferences.number_format)} {currencySymbol}</span></span>
+                                                <span className='text-[0.7rem] font-bold text-muted-foreground mt-1'>Transactions : <span className='font-normal text-nowrap'>{spender.transactions} / {selectedMonthStats.transactions}</span></span>
+                                                <span className='text-[0.7rem] font-bold text-muted-foreground mt-1'>Pourcentage : <span className='font-normal text-nowrap'>{Number(spender.transactions/selectedMonthStats.transactions*100).toFixed(2)} %</span></span>
                                             </div>
                                         </div>
                                     ))

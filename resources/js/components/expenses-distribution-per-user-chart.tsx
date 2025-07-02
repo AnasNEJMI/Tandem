@@ -1,13 +1,14 @@
-import { Expense, MonthlySpenderStats, Spender } from '@/types'
+import { Expense, MonthlySpenderStats, Preferences, Spender } from '@/types'
 import React from 'react'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart'
 import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis } from 'recharts'
-import { getSpenderColor } from '@/lib/data'
+import { currencySymbols, formatAmount, getSpenderColor } from '@/lib/data'
 import { capitalizeFirst } from '@/lib/utils'
 
 interface RepartitionPerUserProps{
     stats : MonthlySpenderStats,
     totalExpenses : number,
+    preferences : Preferences
 }
 
 const chartData = [
@@ -30,10 +31,11 @@ const chartConfig = {
 } satisfies ChartConfig
 
 
-const ExpensesDistributionPerUserChart = ({totalExpenses, stats} : RepartitionPerUserProps) => {
+const ExpensesDistributionPerUserChart = ({totalExpenses, stats, preferences} : RepartitionPerUserProps) => {
 
   const [canRenderChart, setCanRenderChart] = React.useState(false)
-
+  const currencySymbol = currencySymbols[preferences.currency];
+  
   React.useEffect(() => {
       if (totalExpenses > 0) {
           const timeout = setTimeout(() => {
@@ -55,7 +57,7 @@ const ExpensesDistributionPerUserChart = ({totalExpenses, stats} : RepartitionPe
           <BarChart accessibilityLayer data={[stats.data]}>
             <CartesianGrid vertical={false} strokeDasharray="3 3"/>
             <YAxis
-              tickFormatter={(value) => `${value} €`}
+              tickFormatter={(value) => `${formatAmount(Number(value), preferences.number_format)} ${currencySymbol}`}
             />
             <XAxis
               dataKey="month"

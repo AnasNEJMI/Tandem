@@ -134,7 +134,9 @@ export function ExpensesDetailsFiltersSidebar({
                 <li key={index} className="flex items-center justify-center gap-2 text-typography">
                     <Toggle
                       pressed = {selectedCategories.some((cat) => cat.id === category.id)}
-                      onPressedChange={() => updateCategories(category.name)} className="flex-1" key={index}
+                      onPressedChange={() => updateCategories(category.name)}
+                      className="flex-1"
+                      key={index}
                       >
                         {category.name}
                     </Toggle>
@@ -146,89 +148,49 @@ export function ExpensesDetailsFiltersSidebar({
         <div className="h-px w-full bg-popover-border mt-4 mb-4 px-6"></div>
         <span className="text-sm font-bold px-6">Personnes</span>
         <div className="px-6">
-          <ToggleGroup type="multiple" className="flex py-1 px-1 rounded-xl border border-card-border">
+          <ToggleGroup type="multiple" className="flex py-1 px-1 gap-1 rounded-xl border border-card-border">
           {
             spenders.map((spender, index) =>{
-              if(index < spenders.length -1){
-                return <>
-                        <Toggle
-                          pressed = {selectedSpenders.some((sp) => sp.id === spender.id)}
-                          onPressedChange={() => updateSpenders(spender.name)} className="flex-1" key={index}
-                          >
-                            {spender.name}
-                        </Toggle>
-                        <div key={index} className="w-px h-8 bg-accent"></div>
-                      </>
-              }else{
                 return <Toggle 
                           pressed = {selectedSpenders.some((sp) => sp.id === spender.id)}
                           onPressedChange={() => updateSpenders(spender.name)}
                           className="flex-1" key={index}>
                             {spender.name}
                         </Toggle>
-              }
             })
           }
           </ToggleGroup>
         </div>
         <span className="text-sm font-bold px-6">Ordonner par</span>
         <div className="px-6">
-          <ToggleGroup type="single" className="flex py-1 px-1 rounded-xl border border-card-border">
+          <ToggleGroup type="single" className="flex py-1 px-1 gap-1 rounded-xl border border-card-border">
           {
-            expenseOrderBys.map((ob, index) =>{
-              if(index < spenders.length -1){
-                return <>
-                        <Toggle
-                          pressed = {orderBy === ob}
-                          onPressedChange={() => updateOrderBy(ob as "Date" | "Montant")}
-                          className="flex-1"
-                          key={index}
-                          >
-                            {ob}
-                        </Toggle>
-                        <div className="w-px h-8 bg-accent"></div>
-                      </>
-              }else{
-                return <Toggle 
-                          pressed = {orderBy === ob}
-                          onPressedChange={() => updateOrderBy(ob as "Date" | "Montant")}
-                          className="flex-1"
-                          key={index}>
-                            {ob}
-                        </Toggle>
-              }
-            })
+            expenseOrderBys.map((ob, index) =>(
+              <Toggle 
+                pressed = {orderBy === ob}
+                onPressedChange={() => updateOrderBy(ob as "Date" | "Montant")}
+                className="flex-1"
+                key={index}>
+                  {ob}
+              </Toggle>
+            ))
           }
           </ToggleGroup>
         </div>
         <Separator className="bg-card-border"/>
         <span className="text-sm font-bold px-6">Sens</span>
         <div className="px-6">
-          <ToggleGroup type="single" className="flex py-1 px-1 rounded-xl border border-card-border">
+          <ToggleGroup type="single" className="flex py-1 px-1 gap-1 rounded-xl border border-card-border">
           {
-            expenseOrderByDirection.map((obd, index) =>{
-              if(index < spenders.length -1){
-                return <>
-                        <Toggle
-                          pressed = {orderByDirection === obd}
-                          onPressedChange={() => updateOrderByDirection(obd as "Croissant" | "Décroissant")}
-                          className="flex-1"
-                          key={index}
-                          >
-                            {obd}
-                        </Toggle>
-                        <div className="w-px h-8 bg-accent"></div>
-                      </>
-              }else{
-                return <Toggle 
-                          pressed = {orderByDirection === obd}
-                          onPressedChange={() => updateOrderByDirection(obd as "Croissant" | "Décroissant")}
-                          className="flex-1"
-                          key={index}>
-                            {obd}
-                        </Toggle>
-              }
-            })
+            expenseOrderByDirection.map((obd, index) =>(
+              <Toggle 
+                pressed = {orderByDirection === obd}
+                onPressedChange={() => updateOrderByDirection(obd as "Croissant" | "Décroissant")}
+                className="flex-1"
+                key={index}>
+                  {obd}
+              </Toggle>
+            ))
           }
           </ToggleGroup>
         </div>

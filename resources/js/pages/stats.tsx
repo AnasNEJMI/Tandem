@@ -1,5 +1,5 @@
 
-import { Category, ChartStats, MonthStats, Spender, type SharedData } from '@/types';
+import { Category, ChartStats, MonthStats, Preferences, Spender, type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import StatsMobileLayout from '@/layouts/mobile/stats-mobile-layout';
 import { useEffect } from 'react';
@@ -11,18 +11,19 @@ interface StatsProps{
     categories : Category[],
     month_stats : MonthStats[];
     evolution_stats : ChartStats,
+    preferences : Preferences,
 }
 
-export default function Stats({month_stats, evolution_stats, spenders, categories} : StatsProps) {
+export default function Stats({month_stats, evolution_stats, spenders, categories, preferences} : StatsProps) {
     const { auth } = usePage<SharedData>().props;
     
     useEffect(() => {
     //   console.log(expenses);
     //   console.log("general_stats : ", general_stats);
     //   console.log("per_spender_stats : ", per_spender_stats);
-      console.log("month_stats : ", month_stats);
-      console.log("spenders : ", spenders);
-      console.log("categories : ", categories);
+    //   console.log("month_stats : ", month_stats);
+    //   console.log("spenders : ", spenders);
+    //   console.log("categories : ", categories);
     }, [])
     
     return (
@@ -35,10 +36,8 @@ export default function Stats({month_stats, evolution_stats, spenders, categorie
                 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet"></link>
             </Head>
             <StatsMobileLayout>
-                <MonthlySpendingStats stats = {month_stats}/>
-                <SpendingEvolutionStats spenders={spenders} categories={categories} stats={evolution_stats} className='mt-8'/>
-                {/* <GenralSpendingEvolution stats = {general_stats}/> */}
-                {/* <SpendingTrendPerSpender stats={per_spender_stats} className='mt-8'/> */}
+                <MonthlySpendingStats preferences={preferences} stats = {month_stats}/>
+                <SpendingEvolutionStats preferences={preferences} spenders={spenders} categories={categories} stats={evolution_stats} className='mt-8'/>
             </StatsMobileLayout>
         </>
     );

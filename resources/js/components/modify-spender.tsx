@@ -1,70 +1,64 @@
-import React, { FormEvent, useEffect, useState } from 'react'
+import { Spender } from '@/types'
+import { router, useForm } from '@inertiajs/react'
+import React, { FormEvent, useState } from 'react'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
 import { Button } from './ui/button'
-import { ArrowLeft, Pencil} from 'lucide-react'
-import { Category } from '@/types'
 import CategoryIcon from './category-icon'
 import DeleteCategory from './delete-category'
-import { router, useForm } from '@inertiajs/react'
+import { ArrowLeft, Pencil } from 'lucide-react'
 import { Input } from './ui/input'
-import ColorPicker from './color-picker'
 import InputError from './input-error'
+import ColorPicker from './color-picker'
+import DeleteSpender from './delete-spender'
 
-interface ModifyCategoryProps{
-    category : Category
+
+interface ModifySpenderProps{
+    spender : Spender
 }
 
-interface UpdateCategoryDataForm{
+interface UpdateSpenderDataForm{
     id : number,
     name : string,
     color : string,
     [k : string] : any
 }
-const ModifyCategory = ({category} : ModifyCategoryProps) => {
-    const [open, setOpen] = useState(false);
-    const [name, setName] = useState(category.name);
-    const [color, setColor] = useState(category.color);
-    const {data, setData,put,reset, errors} = useForm<UpdateCategoryDataForm>({
-        id : category.id,
-        name : category.name,
-        color : category.color,
-    });
 
+const ModifySpender = ({spender} : ModifySpenderProps) => {
+    const [open, setOpen] = useState(false);
+    const [name, setName] = useState(spender.name);
+    const [color, setColor] = useState(spender.color);
+    const {data, setData,put,reset, errors} = useForm<UpdateSpenderDataForm>({
+        id : spender.id,
+        name : spender.name,
+        color : spender.color,
+    });
     const handleModifySubmit = (e : FormEvent) => {
         e.preventDefault();
 
-        put('/settings/category',{
+        put('/settings/spender',{
             preserveScroll : true,
             preserveState:true,
             onSuccess :() => {
                 reset();
                 setOpen(false);
-                router.reload({only:['categories'], onSuccess : () => {
-                    setData('name', category.name);
-                    setData('color', category.color);
-                }});
+                router.reload({only:['spenders']});
             }
 
         })
-        console.log('modifying : ', data)
     }
-
-    
   return (
     <Dialog open = {open} onOpenChange={(open) => {reset(); setOpen(open);}}>
         <div className='flex'>
             <DialogTrigger asChild className='h-20 w-full'>
                 <Button variant='ghost' className='relative p-4 rounded-l-md rounded-r-none bg-white flex items-center justify-center gap-4'>
-                    <div className='rounded-full bg-accent/50 w-12 h-12 flex items-center justify-center'>
-                        <CategoryIcon category={category.name} className='w-6 h-6'/>
-                    </div>
+                    <div style={{backgroundColor : spender.color}} className='rounded-md w-12 h-12 border-4 border-typography/20'></div>
                     <div className='flex flex-col flex-1'>
-                        <span className='font-bold text-lg text-typography'>{category.name}</span>
-                        <span className='text-sm font-light text-muted-foreground'>{category.transactions} transactions</span>
+                        <span className='font-bold text-lg text-typography'>{spender.name}</span>
+                        <span className='text-sm font-light text-muted-foreground'>{spender.transactions} transactions</span>
                     </div>
                 </Button>
             </DialogTrigger>
-            <DeleteCategory className='rounded-tr-md rounded-br-md rounded-tl-none rounded-bl-none h-20 bg-white w-20' category={category}/>
+            <DeleteSpender className='rounded-tr-md rounded-br-md rounded-tl-none rounded-bl-none h-20 bg-white w-20' spender={spender}/>
         </div>
         <DialogContent className="flex flex-col">
             <div className='absolute top-0 left-0 pt-6 pl-6'>
@@ -79,7 +73,7 @@ const ModifyCategory = ({category} : ModifyCategoryProps) => {
                     <DialogHeader>
                         <DialogTitle className='text-start flex items-center justify-center flex-col'>
                             <Pencil className='w-12 h-12' />
-                            <span className='text-xl mt-2'>Modifer la catégorie</span>
+                            <span className='text-xl mt-2'>Modifer une personne</span>
                             <DialogDescription className='text-balance font-light text-sm'>
                                 Changez le nom ou la une couleur
                             </DialogDescription>
@@ -87,7 +81,7 @@ const ModifyCategory = ({category} : ModifyCategoryProps) => {
                         <DialogDescription/>
                     </DialogHeader>
                     <div className='mt-8'>
-                        <span className='text-muted-foreground font-bold text-sm'>Intitulé</span>
+                        <span className='text-muted-foreground font-bold text-sm'>Nom</span>
                         <Input value={name} onChange={(e) => {setName(e.target.value); setData('name', e.target.value);}} className='h-14 mt-1 font-black'/>
                     </div>
                     {
@@ -102,7 +96,7 @@ const ModifyCategory = ({category} : ModifyCategoryProps) => {
                     </div>
                 </div>
                 <DialogFooter className=" mt-8">
-                    <Button disabled = {name === name && data.color === category.color} type='submit' variant={'default'} className='flex-1 p-4'>
+                    <Button disabled = {name === spender.name && color === spender.color} type='submit' variant={'default'} className='flex-1 p-4'>
                         Confirmer
                     </Button>
                 </DialogFooter>
@@ -112,4 +106,4 @@ const ModifyCategory = ({category} : ModifyCategoryProps) => {
   )
 }
 
-export default ModifyCategory
+export default ModifySpender

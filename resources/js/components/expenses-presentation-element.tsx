@@ -1,37 +1,22 @@
-import { Expense } from '@/types';
-import React from 'react'
-import AnimatedCounter from './animated-counter';
+import { Expense, Preferences } from '@/types';
+import useCalculateAndFormatAmount from '@/hooks/useCalculateAndFormatAmount';
+import useCurrencySymbol from '@/hooks/use-currency-symbol';
 
 interface ExpensePresentationProps{
     expenses : Expense[],
+    preferences : Preferences
 
 }
 
-const ExpensesPresentationElement = ({expenses} : ExpensePresentationProps) => {
-    const calculateTotalAmount = (expenses : Expense[]) => {
-        let totalAmount = 0.00;
-
-        expenses.forEach((expense) => {
-            totalAmount += Number(expense.amount);
-        });
-
-        return totalAmount;
-    }
-    const calculateTotalAmountForSpender = (expenses: Expense[], spenderId : number) => {
-        const spenderExpenses = expenses.filter((expense) => expense.spender.id === spenderId); 
-        if(spenderExpenses.length === 0) return 0;
-
-        let totalAmount = 0.00;
-
-        spenderExpenses.forEach((expense) => {
-            totalAmount += Number(expense.amount);
-        });
-
-        return totalAmount;
-    }
+const ExpensesPresentationElement = ({expenses, preferences} : ExpensePresentationProps) => {
+    const totalAmount = useCalculateAndFormatAmount(expenses, preferences.number_format);
+    const currencySymbol = useCurrencySymbol(preferences.currency)
   return (
     <div className='w-full flex flex-col items-center mt-10'>
-        <div><AnimatedCounter to = {calculateTotalAmount(expenses)} duration={1.5} className='font-black text-4xl'/><span className='font-black text-4xl'> €</span></div>
+        <div>
+            <span className='font-black text-4xl'>{totalAmount}</span>
+            <span className='font-black text-4xl'> {currencySymbol}</span>
+        </div>
         <span className='text-muted-foreground font-light text-xs'>Total Dépensé</span>
     </div>
   )

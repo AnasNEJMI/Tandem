@@ -58,12 +58,25 @@ export interface Spender{
     id : number,
     name : string,
     color : string,
+    transactions? : number,
 }
 
 export interface Category{
     id : number,
     name : string,
     color : string,
+}
+
+export interface Preferences{
+    id : number,
+    user_id : number,
+    currency : string,
+    language : 'fr' | 'en',
+    theme : 'light' | 'dark',
+    number_format : 'cd' | 'dc',
+    date_format : 'mdy' | 'dmy',
+    charts_color : string,
+    charts_style : 'line' | 'bar',
 }
 
 export interface Place{
