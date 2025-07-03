@@ -28,16 +28,16 @@ const ColorPicker = ({color, setColor, className} : ColorPickerProps) => {
                 <Pipette />
             </Button>
         </SheetTrigger>
-        <SheetContent side='bottom' className='h-screen flex flex-col'>
-                <div className='grow overflow-y-auto'>
-                    <div className='absolute top-0 left-0 pt-6 pl-6'>
+        <SheetContent side='bottom' className='h-screen flex flex-col items-center'>
+                <div className='grow flex overflow-y-auto flex-col max-w-xl w-full'>
+                    <div className='p-6 flex items-center'>
                         <SheetClose asChild>
-                            <Button type="button" variant="ghost" className='w-12 h-12'>
+                            <Button type="button" variant="ghost" className='w-16 h-16 rounded-full'>
                                 <ArrowLeft/>
                             </Button>
                         </SheetClose>
                     </div>
-                    <SheetHeader className='flex items-center justify-center pt-16'>
+                    <SheetHeader className='flex items-center justify-center pt-8'>
                         <SheetTitle className='flex items-center justify-center flex-col'>
                             <Pipette className='w-12 h-12'/>
                             <span className='font-bold text-xl'>Couleurs</span>
@@ -46,7 +46,7 @@ const ColorPicker = ({color, setColor, className} : ColorPickerProps) => {
                             Choisissez votre couleur
                         </SheetDescription>
                     </SheetHeader>
-                    <div className='mt-8 grid grid-cols-6 gap-2 px-6 pb-16'>
+                    <div className='grow mt-8 grid grid-cols-6 gap-2 px-6 pb-16'>
                         {
                             colors.map((palette, index) => (
                                 palette.map((c, index2) => (
@@ -60,8 +60,8 @@ const ColorPicker = ({color, setColor, className} : ColorPickerProps) => {
                         }
                     </div>
                 </div>
-                <SheetFooter>
-                    <Button disabled = {color === selectedColor} onClick={updateColorAndClose} variant={'default'} className='py-6'>
+                <SheetFooter className='w-full max-w-xl'>
+                    <Button disabled = {color === selectedColor} onClick={updateColorAndClose} variant={'default'} className='py-6 w-full'>
                         Confirmer
                     </Button>
                 </SheetFooter>

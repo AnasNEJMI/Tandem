@@ -1,10 +1,10 @@
 
 import { Category, ChartStats, MonthStats, Preferences, Spender, type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import StatsMobileLayout from '@/layouts/mobile/stats-mobile-layout';
+import StatsLayout from '@/layouts/mobile/stats-layout';
 import { useEffect } from 'react';
-import MonthlySpendingStats from '@/components/monthly-spending-stats';
-import SpendingEvolutionStats from '@/components/spending-evolution-stats';
+import StatsMonthlySpendingSection from '@/components/stats/stats-monthly-spending-section';
+import StatsSpendingEvolutionSection from '@/components/stats/stats-spending-evolution-section';
 
 interface StatsProps{
     spenders : Spender[],
@@ -35,10 +35,10 @@ export default function Stats({month_stats, evolution_stats, spenders, categorie
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin=''/>
                 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet"></link>
             </Head>
-            <StatsMobileLayout>
-                <MonthlySpendingStats preferences={preferences} stats = {month_stats}/>
-                <SpendingEvolutionStats preferences={preferences} spenders={spenders} categories={categories} stats={evolution_stats} className='mt-8'/>
-            </StatsMobileLayout>
+            <StatsLayout  className='flex flex-col lg:flex-row gap-8 lg:items-start lg:justify-start mt-8'>
+                <StatsMonthlySpendingSection className='flex-1' preferences={preferences} stats = {month_stats}/>
+                <StatsSpendingEvolutionSection preferences={preferences} spenders={spenders} categories={categories} stats={evolution_stats} className='flex-1'/>
+            </StatsLayout>
         </>
     );
 }

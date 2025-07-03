@@ -1,11 +1,11 @@
 import { Category, Expense, Preferences, Spender, type SharedData } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import StatsMobileLayout from '@/layouts/mobile/stats-mobile-layout';
-import SettingsMobileLayout from '@/layouts/mobile/settings-mobile-layout';
+import StatsLayout from '@/layouts/mobile/stats-layout';
+import SettingsLayout from '@/layouts/mobile/settings-layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChartLine, PersonStanding, ShapesIcon, UserIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import Logout from '@/components/logout';
+import SettingsLogoutDialog from '@/components/settings/settings-logout-dialog';
 
 interface SettingsProps{
     categories : Category[],
@@ -23,7 +23,7 @@ export default function Settings({categories, spenders, preferences} : SettingsP
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
             </Head>
-            <SettingsMobileLayout
+            <SettingsLayout
                 openTab = {openTab}
                 setOpenTab = {setOpenTab}
                 categories = {categories}
@@ -68,9 +68,9 @@ export default function Settings({categories, spenders, preferences} : SettingsP
                     </CardContent>
                 </Card>
 
-                <Logout className = 'mt-8'/>
+                <SettingsLogoutDialog className = 'mt-8'/>
 
-            </SettingsMobileLayout>
+            </SettingsLayout>
         </>
     );
 }

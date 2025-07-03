@@ -1,7 +1,6 @@
 import { categories } from '@/lib/data';
 import { cn } from '@/lib/utils';
-import { ActivityIcon, AirplayIcon, BabyIcon, BackpackIcon, BanknoteIcon, BuildingIcon, BusFrontIcon, CarIcon, CatIcon, CircleHelpIcon, CookingPotIcon, FootprintsIcon, FuelIcon, GiftIcon, GraduationCapIcon, HandCoins, HandHeartIcon, Home, HomeIcon, HouseIcon, PlaneIcon, Plug2Icon, ShirtIcon, ShoppingCartIcon, SmartphoneIcon, UtensilsIcon, WifiIcon, WindIcon } from 'lucide-react';
-import React from 'react'
+import { ActivityIcon, AirplayIcon, BabyIcon, BanknoteIcon, BuildingIcon, BusFrontIcon, CarIcon, CatIcon, CircleHelpIcon, CookingPotIcon, FootprintsIcon, FuelIcon, GiftIcon, GraduationCapIcon, HandCoins, HandHeartIcon, Home, HomeIcon, HouseIcon, PlaneIcon, Plug2Icon, ShirtIcon, ShoppingCartIcon, SmartphoneIcon, UtensilsIcon, WifiIcon, WindIcon } from 'lucide-react';
 
 const CategoryIcon = ({category, className} : {category : string, className? : string}) => {
   switch(category){

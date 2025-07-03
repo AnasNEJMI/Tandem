@@ -4,7 +4,7 @@ import { ChartLineIcon, FlagIcon, SettingsIcon, WalletIcon } from 'lucide-react'
 const MobileNav = () => {
     const pathName = window.location.pathname;
   return (
-    <footer className = "fixed z-30 bottom-0 bg-background h-24 w-full  grid grid-cols-4 p-2">
+    <nav className = "fixed z-30 bottom-0 bg-background h-24 w-full  grid grid-cols-4 p-2">
         <Link href={'/expenses'} className={`flex items-center transition-all duration-150 ease-out justify-center flex-col rounded-xl ${pathName === "/expenses"? "bg-accent-foreground" : "bg-background"}`}>
             <WalletIcon className={`transition-all duration-150 ease-out text-xs ${pathName === "/expenses"? "invert" : ""}`}/>
             <span className={`transition-all duration-150 ease-out text-xs ${pathName === "/expenses"? "text-accent" : "text-typography"}`}>Dépenses</span>
@@ -21,7 +21,7 @@ const MobileNav = () => {
             <SettingsIcon className={`text-xs ${pathName === "/settings"? "invert" : ""}`}/>
             <span className={`text-xs ${pathName === "/settings"? "text-accent" : "text-typography"}`}>Paramètres</span>
         </Link>
-    </footer>
+    </nav>
   )
 }
 
