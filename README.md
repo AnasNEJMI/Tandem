@@ -12,13 +12,7 @@ Tandem is an expense tracking app designed to help individuals and households **
 * ✅ **Step-by-Step Onboarding**: Guided setup to personalize your spenders, categories, and preferred places.
 * 💸 **Expense Tracking**: Log and categorize expenses with ease.
 * 📈 **Smart Stats & Insights**: Visual breakdowns of where your money goes.
-* 🎯 **Goals Management**:
-
-  * **Budget Goals**: Set spending limits per category, spender, or period.
-  * **Project Savings**: Plan for future expenses with dynamic saving plans.
-* 🔔 **Progress Reminders**: Stay on track with timely notifications.
-* 🔐 **Secure & Private**: Your data stays yours — we prioritize privacy.
-* 🌙 **Dark Mode**: Designed for night owls and aesthetes.
+* 🎯 **Goals Management**: Set spending limits per category, spender, or period.
 
 ---
 
