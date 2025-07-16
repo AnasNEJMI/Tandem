@@ -1,22 +1,22 @@
 [![English](https://img.shields.io/badge/lang-en-blue.svg)](./README.md)
 [![Français](https://img.shields.io/badge/lang-fr-blue.svg)](./README.fr.md)
 
-# 📊 Tandem — Personal & Collaborative Expense Tracker
+# Tandem — Personal & Collaborative Expense Tracker
 
 Tandem is an expense tracking app designed to help individuals and households **track spending, set savings goals, and gain insights into their finances — together or solo**.
 
 ---
 
-## 🚀 Features
+## Features
 
 * ✅ **Step-by-Step Onboarding**: Guided setup to personalize your spenders, categories, and preferred places.
-* 💸 **Expense Tracking**: Log and categorize expenses with ease.
-* 📈 **Smart Stats & Insights**: Visual breakdowns of where your money goes.
-* 🎯 **Goals Management**: Set spending limits per category, spender, or period.
+* ✅ **Expense Tracking**: Log and categorize expenses with ease.
+* ✅ **Smart Stats & Insights**: Visual breakdowns of where your money goes.
+* ✅ **Goals Management**: Set spending limits per category, spender, or period.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Backend:** Laravel (PHP)
 * **Frontend:** Inertia.js + React + TailwindCSS - ReshartsJS
@@ -25,7 +25,7 @@ Tandem is an expense tracking app designed to help individuals and households **
 
 ---
 
-## 🧹 Setup & Installation
+## Setup & Installation
 
 1. **Clone the repository**
 
@@ -62,7 +62,7 @@ php artisan serve
 
 ---
 
-## 🚩 Roadmap
+##  Roadmap
 
 * [ ] Multi-user expense sharing
 * [ ] Export reports to PDF/CSV
