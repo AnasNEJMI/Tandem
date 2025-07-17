@@ -72,12 +72,12 @@ php artisan serve
       
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
 ---
 
-## 📬 Contact
+## Contact
 
-Built with ❤️ by [Anas NEJMI](https://anasnejmi.com)
+Built with love and passion, by [Anas NEJMI](https://anasnejmi.com)
