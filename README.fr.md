@@ -1,7 +1,7 @@
 [![English](https://img.shields.io/badge/lang-en-blue.svg)](./README.md)
 [![Français](https://img.shields.io/badge/lang-fr-blue.svg)](./README.fr.md)
 
-# 📊 Tandem — Suivi de Dépenses Personnel et Collaboratif
+# Tandem — Suivi de Dépenses Personnel et Collaboratif
 
 Tandem est une application de suivi des dépenses conçue pour aider les individus et les foyers à **suivre leurs dépenses, fixer des objectifs d'épargne et mieux comprendre leurs finances — seul ou à plusieurs**.
 
