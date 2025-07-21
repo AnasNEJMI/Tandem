@@ -64,8 +64,6 @@ php artisan serve
 
 ##  Roadmap
 
-* [ ] Multi-user expense sharing
-* [ ] Export reports to PDF/CSV
 * [ ] Mobile app companion
 * [ ] Language & theme support
 * [ ] Additional tracking data
