@@ -65,10 +65,10 @@ php artisan serve
 
 ## Feuille de Route
 
-* [ ] Partage des dépenses entre plusieurs utilisateurs
-* [ ] Exportation des rapports en PDF/CSV
-* [ ] Application mobile compagnon
+
+* [ ] Application mobile Android/iOS
 * [ ] Internalisation et changement de thème
+* [ ] Composants statistiques supplémentaires
 
 ---
 
@@ -80,4 +80,4 @@ Ce projet est sous licence MIT.
 
 ## 📬 Contact
 
-Développé avec ❤️ par [Anas NEJMI](https://anasnejmi.com)
+Développé avec a;our et passion par [Anas NEJMI](https://anasnejmi.com)
