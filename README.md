@@ -75,7 +75,3 @@ php artisan serve
 This project is licensed under the MIT License.
 
 ---
-
-## Contact
-
-Built with love and passion, by [Anas NEJMI](https://anasnejmi.com)
